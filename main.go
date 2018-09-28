@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"mygo2/package1"
+)
 
 func main()  {
-	fmt.Println("Hello, go")
+	package1.Test()
 }
