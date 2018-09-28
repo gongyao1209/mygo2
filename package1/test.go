@@ -110,6 +110,17 @@ func varVsNew()  {
 	//u5[0] = User2{}
 	//u5[0][u.Name] = u
 	fmt.Println(u5) //&map[gongyao:{gongyao XVlBzgbaiCM 7504504064263669287 Aj Wwh} b:{gongyao XVlBzgbaiCM 7504504064263669287 Aj Wwh}]
+	fmt.Printf("u6 之前的地址：%p\n", &u6)
+
+	u6 = u4
+	fmt.Printf("u4 的地址：%p\n", &u4)
+	fmt.Printf("u6 的地址：%p\n", &u6)
+	u6 = User2{}
+	u6["g"] = u
+	fmt.Printf("u6 的地址：%p\n", &u6)
+	//
+	//fmt.Println(u4)
+	//fmt.Println(u6)
 }
 
 func Test()  {
