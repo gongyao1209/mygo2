@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"sync"
+	"time"
 )
 
 type User struct {
@@ -168,7 +170,9 @@ func compare(str1 string, str2 string) bool {
 
 //测试信道
 func TestChan1()  {
-	//str1 := "gongyao"
+	str1 := "gongyao"
+	map1 := str_map(str1)
+
 	max := 1000
 
 	type jishu struct {
@@ -187,14 +191,35 @@ func TestChan1()  {
 		}()
 	}
 
+	var wg sync.WaitGroup
+
 	for i := 0; i < max; i++ {
 		a := <- ch2
-		fmt.Println(a.Str, a.Count)
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+
+			time.Sleep(1 * time.Second)
+
+			if len(map1) != len(*a.Str) {
+				//return
+			}
+			for key, value := range map1 {
+				if (*a.Str)[key] != value {
+					//return
+				}
+			}
+
+			fmt.Println(a.Str, a.Count)
+		}()
 	}
+
+	wg.Wait()
 }
+
 
 func Test()  {
 	TestChan1()
-
 	return
 }
