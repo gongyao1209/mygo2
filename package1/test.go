@@ -3,6 +3,7 @@ package package1
 import (
 	"fmt"
 	"math/rand"
+	"strings"
 )
 
 type User struct {
@@ -66,6 +67,9 @@ func newVsMake()  {
 
 }
 
+/**
+ * 声明 和 初始化，映射声明的时候 并没有初始化
+ */
 func varVsNew()  {
 	u := User{
 		Name:"gongyao",
@@ -99,7 +103,7 @@ func varVsNew()  {
 	//u5[0][u.Name] = u
 	u6[u.Name] = u
 
-	fmt.Println(u4) //map[]
+	fmt.Printf("u4 的地址: %p\n", u4) //map[] 这个时候还没有分配内存
 	fmt.Println("u5 : ", u5) //u5 :  &map[]
 	fmt.Println("u7 : ", u7) //u7 :  &map[]
 	fmt.Println(u6) //map[gongyao:{gongyao XVlBzgbaiCM 7504504064263669287 Aj Wwh}]
@@ -123,71 +127,74 @@ func varVsNew()  {
 	//fmt.Println(u6)
 }
 
-func Test()  {
+func str_map(str string) (map[string]int) {
+	str_map := make(map[string]int)
+	str_arr := strings.Split(str, "")
 
-	varVsNew()
-	return
-	var i int64
-	var u  User
-	//var u1 map[string]User = map[string]User{}
-	u1 := User2{}
-
-	u1["a"] = u
-	//u1 = append(u1, u)
-	return
-
-	//u1.Name = "wanghui"
-	//fmt.Println(u1)
-	return
-
-	//temp_u2 := User2{}
-	var temp_u2 User2
-	fmt.Println(&temp_u2)
-
-	temp_u2 = User2{}
-	fmt.Println(&temp_u2) //只声明 没有初始化 不能被赋值
-	return
-
-	c := Class{}
-
-	for true {
-		if i == 10 {
-			break
-		}
-
-		var t_name string
-		if i == 2 {
-			t_name = "gongyao"
+	for _, value := range str_arr {
+		if str_map[value] == 0 {
+			str_map[value] = 1;
 		} else {
-			t_name = randSeq(10)
+			str_map[value]++;
 		}
-
-		temp_u := User{
-			Name: t_name,
-			Mobile:randSeq(1),
-			Age: rand.Int63(),
-			Birthplace:randSeq(2),
-			Email:randSeq(3),
-		}
-
-		//fmt.Println(temp_u2)
-		//return
-
-		temp_u2[temp_u.Name] = temp_u
-
-		c.Sum++
-
-		i++
 	}
 
-	c.Student = &temp_u2
+	return str_map
+}
 
-	fmt.Println(c)
-	fmt.Println((*c.Student)["gongyao"])
+func compare(str1 string, str2 string) bool {
 
-	//if len(*c.Student) > 0 {
-	//	for _, u := range c.Student {
-	//		fmt.Println(u)
-	//	}
-	//}
+	if str1 == "" || str2 == "" {
+		return false
+	}
+
+	str1_map := str_map(str1)
+	fmt.Println(str1_map)
+	str2_map := str_map(str2)
+	fmt.Println(str2_map)
+
+	if len(str1_map) != len(str2_map) {
+		return false
+	}
+
+	for key, value := range str1_map {
+		if str2_map[key] != value {
+			return false
+		}
+	}
+
+	return true
+}
+
+//测试信道
+func TestChan1()  {
+	//str1 := "gongyao"
+	max := 1000
+
+	type jishu struct {
+		Str *map[string]int
+		Count string
+	}
+
+	ch2 := make(chan jishu, max)
+
+	for i := 0; i < max; i++ {
+		go func() {
+			str2 := randSeq(8)
+			m := str_map(str2)
+
+			ch2 <- jishu{Str:&m, Count:str2} //
+		}()
+	}
+
+	for i := 0; i < max; i++ {
+		a := <- ch2
+		fmt.Println(a.Str, a.Count)
+	}
+}
+
+func Test()  {
+	TestChan1()
+
+	return
 }
