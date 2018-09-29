@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"strings"
 	"sync"
+	"testing"
 	"time"
 )
 
@@ -173,7 +174,7 @@ func TestChan1()  {
 	str1 := "gongyao"
 	map1 := str_map(str1)
 
-	max := 1000
+	max := 10
 
 	type jishu struct {
 		Str *map[string]int
@@ -189,11 +190,12 @@ func TestChan1()  {
 
 			ch2 <- jishu{Str:&m, Count:str2} //
 		}()
+		<- time.After(time.Second) //go 线程的调用机制由 runtime决定
 	}
 
 	var wg sync.WaitGroup
 
-	for i := 0; i < max; i++ {
+	for i := 0; i < max; i++ { //这个是发生在 所有的上面之后
 		a := <- ch2
 
 		wg.Add(1)
@@ -219,7 +221,36 @@ func TestChan1()  {
 }
 
 
+// 正确的做法
+func Test_Select_Chan1(t *testing.T) { //中间执行了什么操作？
+	readerChannel:= make(chan int )
+	go func(readerChannel chan int ) {
+		for {
+			select {
+			// 判断管道是否关闭
+			case _, ok := <-readerChannel:
+				if !ok {
+					fmt.Println("close")
+					goto BB
+					//return
+				} else {
+					fmt.Println("Normal")
+				}
+			}
+			t.Log("for")
+		}
+	BB:
+		fmt.Println("BB")
+	}(readerChannel)
+	close(readerChannel)
+	<- time.After(time.Second*2)
+}
+
+
 func Test()  {
-	TestChan1()
+	t := testing.T{}
+
+	Test_Select_Chan1(&t)
+	//TestChan1()
 	return
 }
