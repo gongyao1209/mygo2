@@ -248,6 +248,8 @@ func Test_Select_Chan1(t *testing.T) { //中间执行了什么操作？
 
 
 func Test()  {
+
+	strings.Index()
 	t := testing.T{}
 
 	Test_Select_Chan1(&t)
