@@ -138,5 +138,13 @@ func fun_c(a []int)  { //切片作为参数的时候 传递的是 sliceheader
 }
 
 func Test1()  {
-	test2Slice()
+	//test2Slice()
+
+	var a = []int{1, 2, 3}
+
+	if true {
+		a[1] = 10
+	}
+
+	fmt.Println(a)
 }
