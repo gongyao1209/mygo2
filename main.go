@@ -1,6 +1,8 @@
 package main
 
-import "mygo2/package1"
+import (
+	"mygo2/package2"
+)
 
 func main()  {
 	//fmt.Println("Please visit http://127.0.0.1:12345/") //hello world 的革命
@@ -13,5 +15,12 @@ func main()  {
 	//	log.Fatal("ListenAndServe: ", err)
 	//}
 
-	package1.Test1()
+	//package1.Test1()
+	//package2.Test2()
+	//package2.Test3()
+	//package2.Test4()
+	//package2.Test5()
+	//package2.Test6()
+	//package2.Test7()
+	package2.Test9()
 }
