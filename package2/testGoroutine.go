@@ -1,6 +1,7 @@
 package package2
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"time"
@@ -68,7 +69,7 @@ func Test3()  {
 
 // 生产者模式
 //生成器(Generator)
-func boring2(msg string) chan string {
+func boring2(msg string) <-chan string {
 	ch := make(chan string)
 	go func() {
 		for i := 0; ; i++ {
@@ -101,7 +102,7 @@ func Test5()  {
 	fmt.Println("You are boring, I am leaving")
 }
 
-func fanIn(ch1, ch2 chan string) chan string {
+func fanIn(ch1, ch2 <-chan string) chan string {
 	c := make(chan string)
 
 	go func() {
@@ -132,15 +133,19 @@ func Test6()  {
 
 func Test7() {
 	c := boring2("Joe")
-	for {
-		select {
-		case s := <-c:
-			fmt.Println(s)
-		case <-time.After(1 * time.Second):
-			fmt.Println("You're too slow.")
-			return
-		}
+
+	for v := range c { //遍历 即 从 c中吐数据
+		fmt.Println(v)
 	}
+	//for {
+	//	select {
+	//	case s := <-c:
+	//		fmt.Println(s)
+	//	case <-time.After(1 * time.Second):
+	//		fmt.Println("You're too slow.")
+	//		return
+	//	}
+	//}
 }
 
 
@@ -164,12 +169,60 @@ func Test8()  {
 	quit := make(chan bool)
 	c := boring3("gongyao", quit)
 
-	for i:= 0; i < 5; i++ {
-		fmt.Println(<-c)
-	}
-	quit<-true
+	go func(ch chan string, quit chan bool) {
+		for i:= 0; i < 100; i++ {
+			select {
+			case a :=<-ch:
+				fmt.Println(a)
+			case <-quit:
+				return
+			}
+		}
+	}(c, quit)
+
+	//go func() { //闭包之内不要调用别的变量
+	//	for i:= 0; i < 100; i++ {
+	//		select {
+	//		case a :=<-c:
+	//			fmt.Println(a)
+	//		case <-quit:
+	//			return
+	//		}
+	//	}
+	//}()
+	time.Sleep(5 * time.Second)
+	quit<-true //退出 goroutine
 }
 
+func Test10()  {
+
+	ctx, cancel := context.WithCancel(context.Background())
+
+	c := func(ctx2 context.Context) chan int {
+		ch := make(chan int)
+
+		go func(ch chan int) {
+			for i:= 0; ; i++ {
+				select {
+				case ch<-i:
+					fmt.Println(i)
+				case <-ctx2.Done():
+					return
+				}
+			}
+		}(ch)
+
+		return ch
+	}(ctx)
+
+	for v := range c {
+		//fmt.Println(v)
+		if v == 5 {
+			cancel()
+			break
+		}
+	}
+}
 
 
 func f(left, right chan int) {
@@ -177,12 +230,12 @@ func f(left, right chan int) {
 }
 
 func Test9() { //菊花链 嗷嗷待哺的信道
-	const n = 100000
-	leftmost := make(chan int)
+	const n = 100
+	leftmost := make(chan int, 1)
 	right := leftmost
 	left := leftmost
 	for i := 0; i < n; i++ {
-		right = make(chan int)
+		right = make(chan int, 1)
 		go f(left, right)
 		left = right
 	}

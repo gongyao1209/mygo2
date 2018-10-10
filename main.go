@@ -1,8 +1,6 @@
 package main
 
-import (
-	"mygo2/package2"
-)
+import "mygo2/package2"
 
 func main()  {
 	//fmt.Println("Please visit http://127.0.0.1:12345/") //hello world 的革命
@@ -21,6 +19,18 @@ func main()  {
 	//package2.Test4()
 	//package2.Test5()
 	//package2.Test6()
-	//package2.Test7()
-	package2.Test9()
+	package2.Test10()
+	//package2.Test8()
+
+	//defer func() {
+	//	fmt.Println(recover())
+	//}()
+	//panic("I am gongyao")
+
+	//for i := 0; i < 5; i++ {
+	//	defer func(i int) {
+	//		println(i)
+	//	}(i)
+	//}
+
 }
