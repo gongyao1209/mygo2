@@ -244,3 +244,115 @@ func Test9() { //菊花链 嗷嗷待哺的信道
 		}(right)
 	fmt.Println(<-leftmost)
 }
+
+//------------------------------------------GO 并发模式------------------------------------------------
+
+//生产者
+func Producer(factor int, ch chan int)  {
+	for i := 1; ; i++ {
+		ch <- factor * i
+	}
+}
+
+//消费者
+func Consumer(ch chan int)  {
+	for value := range ch {
+		fmt.Println(value)
+	}
+}
+
+//不稳定的退出
+func Test1010_01()  {
+	ch := make(chan int, 64)
+
+	go func(ch chan int) {
+		Producer(2, ch) //生产者之间互不影响
+	}(ch)
+
+	go func(ch chan int) {
+		Producer(3, ch)
+	}(ch)
+
+	go Consumer(ch) //生产者 和 消费者 也互不影响
+
+	time.Sleep(1 * time.Second)
+}
+
+//使用 quit 退出
+func Test1010_02()  {
+	ch := make(chan int, 64)
+	quit := make(chan bool)
+
+	go func(ch chan int, quit chan bool) {
+		for i := 0; ; i++ {
+			select {
+			case <-quit:
+				return
+			case ch <- 10 * i:
+				}
+		}
+	}(ch, quit)
+
+	go func(ch chan int, quit chan bool) {
+		for i := 0; ; i++ {
+			select {
+			case <-quit:
+				return
+			case ch <- 3 * i:
+			}
+		}
+	}(ch, quit)
+
+	go func(ch chan int, quit chan bool) {
+		for value := range ch {
+			if value > 377262 {
+				quit<-true
+				return
+			}
+
+			fmt.Println(value)
+		}
+	}(ch, quit)
+
+	time.Sleep(2 * time.Second)
+	//quit<-true
+}
+
+//安全的退出 goroutine
+func Test1010_03()  {
+	ch := make(chan int, 64)
+	ctx, cancel := context.WithCancel(context.Background())
+
+	go func(ch chan int, ctx2 context.Context) {
+		for i := 0; ; i++ {
+			select {
+			case <-ctx2.Done():
+				return
+			case ch <- 10 * i:
+			}
+		}
+	}(ch, ctx)
+
+	go func(ch chan int, ctx2 context.Context) {
+		for i := 0; ; i++ {
+			select {
+			case <-ctx2.Done():
+				return
+			case ch <- 3 * i:
+			}
+		}
+	}(ch, ctx)
+
+	go func(ch chan int) {
+		for value := range ch {
+			if value > 377262 {
+				cancel()
+				return
+			}
+
+			fmt.Println(value)
+		}
+	}(ch)
+
+	time.Sleep(2 * time.Second)
+}
