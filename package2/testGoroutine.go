@@ -173,10 +173,10 @@ func Test8()  {
 
 
 func f(left, right chan int) {
-	left <- 1 + <-right
+	left <- <-right
 }
 
-func Test9() { //菊花链 什么原理？
+func Test9() { //菊花链 嗷嗷待哺的信道
 	const n = 100000
 	leftmost := make(chan int)
 	right := leftmost
