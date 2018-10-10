@@ -205,7 +205,7 @@ func Test10()  {
 			for i:= 0; ; i++ {
 				select {
 				case ch<-i:
-					fmt.Println(i)
+					fmt.Println("go: ", i)
 				case <-ctx2.Done():
 					return
 				}
@@ -216,8 +216,8 @@ func Test10()  {
 	}(ctx)
 
 	for v := range c {
-		//fmt.Println(v)
-		if v == 5 {
+		fmt.Println(v)
+		if v == 5 { //为什么 不会把
 			cancel()
 			break
 		}
