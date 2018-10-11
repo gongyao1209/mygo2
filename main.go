@@ -32,5 +32,38 @@ func main()  {
 	//		println(i)
 	//	}(i)
 	//}
-
 }
+
+////生产者
+//func Producer(ch chan int, ctx context.Context)  {
+//	for i := 1; ; i++ {
+//		select {
+//		case <-ctx.Done():
+//			return
+//		case ch <- i:
+//		}
+//	}
+//}
+//
+////消费者
+//func Consumer(ch chan int, ctx context.Context)  {
+//	for value := range ch {
+//		select {
+//		case <-ctx.Done():
+//			return
+//		default:
+//			fmt.Println(value)
+//		}
+//	}
+//}
+//
+//func main()  {
+//	ch := make(chan int, 60)
+//	ctx, cancel := context.WithCancel(context.Background()) //通过 context 来退出goroutine
+//
+//	go Producer(ch, ctx)
+//	go Consumer(ch, ctx)
+//
+//	time.Sleep(2 * time.Second)
+//	cancel()
+//}
