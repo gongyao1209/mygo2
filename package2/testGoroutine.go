@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"strings"
+	"sync"
 	"time"
 )
 
@@ -355,4 +357,117 @@ func Test1010_03()  {
 	}(ch)
 
 	time.Sleep(2 * time.Second)
+}
+
+
+//-----------------------------Go 发布订阅并发模式----------------------------------------------
+//Go的并发 核心 是利用goroutine进行并发，channel进行数据交流，无论哪种并发模式，万变不离其宗，根源都是这个。
+//发布订阅 并发模式，主要是 有一个订阅的过程
+
+type(
+	subscriber chan interface{} //订阅者信道
+	topicFun func(v interface{}) bool //订阅主题过滤器
+)
+
+//信息发布者
+type Publisher struct {
+	m	sync.RWMutex //读写锁
+	buffer int	//订阅队列的缓冲大小
+	timeout time.Duration //发布超时时间
+	subscribers map[subscriber]topicFun //订阅者
+}
+
+func NewPublisher(timeout_ time.Duration, buffer_ int) *Publisher {
+	return &Publisher{
+		buffer:buffer_,
+		timeout:timeout_,
+		subscribers:make(map[subscriber]topicFun),
+	}
+}
+func (p *Publisher) Close()  {
+	p.m.Lock()
+	defer p.m.Unlock()
+
+	for sub,_ := range p.subscribers {
+		delete(p.subscribers, sub)
+		close(sub)
+	}
+}
+
+//获得一个订阅者
+func (p *Publisher) SubscribeTopic(t_fun topicFun) chan interface{} {
+	ch := make(chan interface{}, p.buffer)
+	p.m.Lock()
+	p.subscribers[ch] = t_fun
+	p.m.Unlock()
+	return ch
+}
+//取消订阅
+func (p *Publisher) Evict(sub subscriber)  {
+	p.m.Lock()
+	defer p.m.Unlock()
+
+	delete(p.subscribers, sub)
+	close(sub)
+}
+
+//给所有的订阅者发布信息
+func (p *Publisher) Publish(v interface{})  {
+	p.m.RLock()
+	defer p.m.RUnlock()
+
+	var wg sync.WaitGroup
+	for ch, t_fun := range p.subscribers {
+		wg.Add(1)
+		go p.publishOne(ch, t_fun, v, &wg)
+	}
+	wg.Wait()
+}
+
+func (p *Publisher) publishOne(sub subscriber, t_fun topicFun, v interface{}, wg *sync.WaitGroup)  {
+	defer wg.Done()
+
+	if t_fun != nil && !t_fun(v) {
+		return
+	}
+
+	select {
+	case sub <- v:
+	case <-time.After(p.timeout):
+	}
+}
+
+func myfun(v interface{}) bool {
+	if s,ok := v.(string); ok {
+		return strings.Contains(s, "Gongyao")
+	}
+	return false
+}
+
+func Test1011_01()  {
+	//获取信息发布者
+	p := NewPublisher(100 * time.Millisecond, 10)
+	defer p.Close()
+
+	ch1 := p.SubscribeTopic(nil)
+	ch2 := p.SubscribeTopic(myfun)
+
+	go func() {
+		for ch_1 := range ch1 {
+			//p.Evict(ch1)
+			//return
+			fmt.Println("all ", ch_1)
+		}
+	}()
+
+	go func() {
+		for ch_2 := range ch2 {
+			fmt.Println("Go lang ", ch_2)
+		}
+	}()
+
+	p.Publish("Hello Gongyao")
+	p.Publish("Hello go World")
+
+	time.Sleep(1 * time.Second)
 }
