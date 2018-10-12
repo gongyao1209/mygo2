@@ -1,6 +1,8 @@
 package main
 
-import "mygo2/package2"
+import (
+	"mygo2/package2"
+)
 
 func main()  {
 	//fmt.Println("Please visit http://127.0.0.1:12345/") //hello world 的革命
