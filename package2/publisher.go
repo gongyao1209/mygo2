@@ -87,12 +87,13 @@ func (p *Publisher) PublishOne(sub subscriber, filt filter, info interface{}, wg
 	select {
 	case sub<-info:
 	case <-time.After(p.timeout):
+		fmt.Println("timeout")
 	}
 }
 
 func Test1011_01()  {
 	//获取信息发布者
-	p := NewPublisher(100 * time.Microsecond, 32)
+	p := NewPublisher(100 * time.Microsecond, 1)
 	defer p.Close()
 
 	//获取订阅者1
@@ -105,10 +106,7 @@ func Test1011_01()  {
 		return false
 	})
 
-	//发布信息
-	p.PublishAll("Hello gongyao")
-	p.PublishAll("Hello wanghui")
-
+	fmt.Println(sub2)
 	go func() { //读取 订阅者1受到的消息
 		for sub1_msg := range sub1 {
 			fmt.Println("Sub1 : ", sub1_msg)
@@ -119,6 +117,10 @@ func Test1011_01()  {
 			fmt.Println("Sub2 : ", sub2_msg)
 		}
 	}()
+
+	//发布信息
+	p.PublishAll("Hello gongyao")
+	p.PublishAll("Hello wanghui")
 
 	time.Sleep(1 * time.Second)
 }

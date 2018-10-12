@@ -364,13 +364,13 @@ type Students struct {
 }
 
 func (s *Students)addAge(num int, p string)  {
-	//s.m.Lock()
+	s.m.Lock()
 	//defer s.m.Unlock()
-	s.m.RLock()
+	s.m.RLock() //锁🔐
 	defer s.m.RUnlock()
 
-	for i := 0; i < 10; i++ {
-		fmt.Println(p)
+	for i := 0; i < 100; i++ {
+		fmt.Println(i, p)
 
 		s.Age += num
 	}
