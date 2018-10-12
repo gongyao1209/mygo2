@@ -2,6 +2,7 @@ package package1
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -58,13 +59,23 @@ func Test101202()  {
 	//}
 	//
 	//fmt.Println(len(sl))
+	fmt.Println(strings.Replace("gongyao", "yao", "wanghui", 3))
+
+	str := "gongwanghui";
+
+	fmt.Println(strings.Index(str[5:], "yao"))
+	os.Exit(1)
+
 
 	a := IsShanxi(func(v interface{}) bool {
 		if v == nil {
 			return false
 		}
-		return strings.Contains(v.(string), "山西")
-	}, "我是中国山西人")
+
+		i := strings.Compare(v.(string), "山西")
+		return i == 0
+		//return strings.Contains(v.(string), "山西")
+	}, "山西")
 
 	fmt.Println(a)
 }
