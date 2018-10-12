@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -355,4 +356,34 @@ func Test1010_03()  {
 	}(ch)
 
 	time.Sleep(2 * time.Second)
+}
+
+type Students struct {
+	Age int
+	m sync.RWMutex
+}
+
+func (s *Students)addAge(num int, p string)  {
+	//s.m.Lock()
+	//defer s.m.Unlock()
+	s.m.RLock()
+	defer s.m.RUnlock()
+
+	for i := 0; i < 10; i++ {
+		fmt.Println(p)
+
+		s.Age += num
+	}
+}
+
+func Test1012_01()  {
+	stu := &Students{Age:0}
+
+	go stu.addAge(10, "--------")
+	go stu.addAge(10000, "********")
+	go stu.addAge(100000000, "&&&&&&&&")
+
+
+	time.Sleep(1 * time.Second)
+	fmt.Println(stu)
 }
