@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
+	"runtime"
 	"sync"
 	"time"
 )
@@ -386,4 +387,71 @@ func Test1012_01()  {
 
 	time.Sleep(1 * time.Second)
 	fmt.Println(stu)
+}
+
+//----其他并发
+// 控制并发数据
+func Test1012_02()  {
+	ch := make(chan bool, 3)
+	var wg sync.WaitGroup
+	fmt.Println("go number1 : ", runtime.NumGoroutine())
+	fmt.Println(runtime.NumGoroutine())
+
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		ch <- true
+
+		go func(ch chan bool, int2 int) {
+			defer func() {
+				wg.Done()
+			}()
+			fmt.Println(i)
+			<- ch
+		}(ch, i)
+	}
+
+	fmt.Println("go number2 : ", runtime.NumGoroutine())
+	wg.Wait()
+}
+
+
+// 返回生成自然数序列的管道: 2, 3, 4, ...
+func GenerateNatural() chan int {
+	ch := make(chan int, 1)
+	go func() {
+		for i := 2; ; i++ {
+			ch <- i
+		}
+	}()
+	return ch
+}
+
+// 管道过滤器: 删除能被素数整除的数
+func PrimeFilter(in <-chan int, prime int) chan int {
+	out := make(chan int, 1)
+	go func() {
+		for {
+			if i := <-in; i%prime != 0 {
+				fmt.Println("-----", i)
+				out <- i
+			}
+		}
+	}()
+	return out
+}
+
+func Test1012_03() {
+	ch := GenerateNatural() // 自然数序列: 2, 3, 4, ...
+	for i := 0; i < 10; i++ {
+
+		time.Sleep(1 * time.Second)
+		fmt.Printf("ch_pre %p\n", &ch)
+
+		prime := <-ch // 新出现的素数
+		fmt.Printf("%v: %v\n", i+1, prime)
+		ch1 := PrimeFilter(ch, prime) // 基于新素数构造的过滤器
+		fmt.Printf("ch1 %p\n", &ch1)
+		ch = ch1
+		fmt.Printf("ch_cur %p\n", &ch)
+	}
 }

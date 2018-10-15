@@ -1,6 +1,13 @@
 package main
 
-import "mygo2/package1"
+import (
+	"context"
+	"fmt"
+	"mygo2/mianshi"
+	"runtime"
+	"sync"
+	"time"
+)
 
 func main()  {
 	//fmt.Println("Please visit http://127.0.0.1:12345/") //hello world 的革命
@@ -20,9 +27,9 @@ func main()  {
 	//package2.Test5()
 	//package2.Test6()
 	//package2.Test1012_01()
-	//package2.Test1011_01()
+	//package2.Test1012_02()
 	//package2.Test8()
-	package1.Test101202()
+	//package1.Test101202()
 
 	//defer func() {
 	//	fmt.Println(recover())
@@ -34,4 +41,47 @@ func main()  {
 	//		println(i)
 	//	}(i)
 	//}
+
+	//QuitGoroutine()
+
+	mianshi.Test1014_06()
+	//fmt.Println(mianshi.DeffCall_1())
+	//fmt.Println(mianshi.DeffCall_2())
+	//fmt.Println(mianshi.DeffCall_3())
+
+	//mianshi.Test1014_02()
+}
+
+func worker(ctx context.Context, num int, wg *sync.WaitGroup)  {
+	defer wg.Done()
+
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println("quit goroutine", num)
+			return
+		default:
+			fmt.Println("goroutine", num)
+		}
+	}
+}
+
+func QuitGoroutine()  {
+	fmt.Println("goroutine num1  :", runtime.NumGoroutine())
+	ctx, cancel := context.WithCancel(context.Background())
+	var wg sync.WaitGroup
+
+	wg.Add(1)
+	go worker(ctx, 1, &wg)
+
+	wg.Add(1)
+	go worker(ctx, 2, &wg)
+
+	fmt.Println("goroutine num2  :", runtime.NumGoroutine())
+
+	time.Sleep(1 * time.Second)
+	cancel()
+	wg.Wait()
+
+	fmt.Println("goroutine num3  :", runtime.NumGoroutine())
 }
