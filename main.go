@@ -3,13 +3,17 @@ package main
 import (
 	"context"
 	"fmt"
+	"mygo2/db"
 	"mygo2/package1"
 	"runtime"
 	"sync"
 	"time"
 )
 
-func main1()  {
+func main()  {
+
+	db.Test()
+	return
 	i := package1.Defer1019_0101()
 	fmt.Printf("Defer1019_01, addr: %p, i = %d \n", i, *i)
 
@@ -102,7 +106,7 @@ func prin(i, a, b int) int {
 	return sum
 }
 
-func main()  {
+func main1()  {
 	a := 1
 	b := 2
 	defer func() {
