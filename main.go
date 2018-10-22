@@ -3,13 +3,23 @@ package main
 import (
 	"context"
 	"fmt"
-	"mygo2/mianshi"
+	"mygo2/package1"
 	"runtime"
 	"sync"
 	"time"
 )
 
-func main()  {
+func main1()  {
+	i := package1.Defer1019_0101()
+	fmt.Printf("Defer1019_01, addr: %p, i = %d \n", i, *i)
+
+	//fmt.Println("-------------")
+	//
+	//j := package1.Defer1019_04()
+	//fmt.Printf("Defer1019_04, addr: %p, j = %d \n", &j, j)
+
+	//fmt.Println(package1.Defer1019_10())
+	//fmt.Println(package1.Defer1019_11())
 	//fmt.Println("Please visit http://127.0.0.1:12345/") //hello world 的革命
 	//http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 	//	s := fmt.Sprintf("你好, 世界! -- Time: %s", time.Now().String())
@@ -44,7 +54,7 @@ func main()  {
 
 	//QuitGoroutine()
 
-	mianshi.Test1014_06()
+	//mianshi.Test1014_06()
 	//fmt.Println(mianshi.DeffCall_1())
 	//fmt.Println(mianshi.DeffCall_2())
 	//fmt.Println(mianshi.DeffCall_3())
@@ -84,4 +94,25 @@ func QuitGoroutine()  {
 	wg.Wait()
 
 	fmt.Println("goroutine num3  :", runtime.NumGoroutine())
+}
+
+func prin(i, a, b int) int {
+	sum := a + b
+	fmt.Printf("%d) a = %d, b = %d, a + b = %d\n", i, a, b, sum)
+	return sum
+}
+
+func main()  {
+	a := 1
+	b := 2
+	defer func() {
+		prin(1, a, b)
+	}()
+
+	a = 3
+	b = 4
+	defer func() {
+		prin(2, a, b)
+	}()
+	return
 }
