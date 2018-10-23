@@ -12,7 +12,15 @@ import (
 
 func main()  {
 
-	db.Test()
+	//fmt.Println(db.Get(1))
+	key := 1
+
+	fmt.Println(db.SETNX(key, 10))
+	fmt.Println(db.EXPIRE(key, 100))
+
+	//db.Test()
+	//db.Test()
+	//db.Test()
 	return
 	i := package1.Defer1019_0101()
 	fmt.Printf("Defer1019_01, addr: %p, i = %d \n", i, *i)
