@@ -57,7 +57,6 @@ func newPool() *redis.Pool {
 
 func init() {
 	pool = newPool()
-	fmt.Println("111")
 }
 
 func Get(key interface{}) (r string) {
