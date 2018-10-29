@@ -1,30 +1,81 @@
 package db
 
 import (
+	"flag"
 	"fmt"
 	"github.com/garyburd/redigo/redis"
 	"os"
+	"sync"
+	"time"
 )
 
-var c redis.Conn
+var (
+	pool *redis.Pool
+	redisServer = flag.String("redisServer", RedisUrl, "")
+)
 
-func init()  {
-	var err error
-	c, err = redis.Dial("tcp", "localhost:6379")
-	errCheck(err)
-	fmt.Println("redis conn")
+const (
+	RedisUrl = "localhost:6379"
+	redisMaxIdle = 3
+	redisIdleTimeoutSec = 1
+	redisPassword = ""
+)
+
+//获取redis连接池
+func newPool() *redis.Pool {
+	return &redis.Pool{
+		// 最大空闲连接数，如果没有连接连接数据库 也得保存这么大的连接，不至于为空。
+		MaxIdle: redisMaxIdle,
+		// 连接池支持的最大连接数，这是运行时候的连接数。设置为0的时候 不限
+		MaxActive: 0,
+		//在此期间保持空闲关闭连接
+		IdleTimeout: redisIdleTimeoutSec * time.Second,
+		Dial: func () (redis.Conn, error) {
+			c, err := redis.Dial("tcp", RedisUrl)
+			if err != nil {
+				return nil, err
+			}
+			//if _, err := c.Do("AUTH", redisPassword); err != nil {
+			//  c.Close()
+			//  return nil, err
+			//}
+			if _, err := c.Do("SELECT", 1); err != nil {
+				c.Close()
+				return nil, err
+			}
+			return c, nil
+		},
+		TestOnBorrow: func(c redis.Conn, t time.Time) error {
+			if time.Since(t) < time.Minute {
+				return nil
+			}
+			_, err := c.Do("PING")
+			return err
+		},
+	}
+}
+
+func init() {
+	pool = newPool()
+	fmt.Println("111")
 }
 
 func Get(key interface{}) (r string) {
+	conn := pool.Get()
+	defer conn.Close()
+
 	var err error
-	r, err = redis.String(c.Do("GET", key))
+	r, err = redis.String(conn.Do("GET", key))
 	errCheck(err)
 
 	return
 }
 
 func SET(key, value interface{}) int {
-	r, err := redis.String(c.Do("SET", key, value))
+	conn := pool.Get()
+	defer conn.Close()
+
+	r, err := redis.String(conn.Do("SET", key, value))
 	errCheck(err)
 
 	if r == "OK" {
@@ -35,14 +86,20 @@ func SET(key, value interface{}) int {
 }
 
 func SETNX(key, value interface{}) int64 {
-	r, err := redis.Int64(c.Do("SETNX", key, value))
+	conn := pool.Get()
+	defer conn.Close()
+
+	r, err := redis.Int64(conn.Do("SETNX", key, value))
 	errCheck(err)
 
 	return r
 }
 
 func EXPIRE(key interface{}, secend int) int64 {
-	r, err := redis.Int64(c.Do("EXPIRE", key, secend))
+	conn := pool.Get()
+	defer conn.Close()
+
+	r, err := redis.Int64(conn.Do("EXPIRE", key, secend))
 
 	errCheck(err)
 
@@ -59,25 +116,25 @@ func EXPIRE(key interface{}, secend int) int64 {
 //}
 
 
-
 func Test()  {
+	var wg sync.WaitGroup
 
-	//var c redis.Conn
-	//c = RedisConn()
+	for i := 0; i < 4; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			fmt.Println(Get("name2"))
+		}()
+	}
 
+	for i := 0; i < 10; i++ {
+		if i > 5 {
+			time.Sleep(1 * time.Second)
+		}
+		fmt.Println("i = ", i, ", ActiveCount: ", pool.ActiveCount())
+	}
 
-	//对本次连接进行set操作
-	res,setErr := c.Do("SETNX","url", "xxbandy.github.io1")
-	errCheck(setErr)
-	fmt.Println(res)
-
-	_,setErr = c.Do("EXPIRE", "url", 10)
-	errCheck(setErr)
-
-	//使用redis的string类型获取set的k/v信息
-	//r,getErr := redis.StringMap((*c).Do("HGETALL","url"))
-	//errCheck(getErr)
-	//fmt.Println(r["1"])
+	wg.Wait()
 }
 
 func errCheck(err error) {

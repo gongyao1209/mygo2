@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"runtime"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -453,5 +454,48 @@ func Test1012_03() {
 		fmt.Printf("ch1 %p\n", &ch1)
 		ch = ch1
 		fmt.Printf("ch_cur %p\n", &ch)
+	}
+}
+
+func ToInt(str interface{}) (int, bool) {
+
+	var r int
+
+	switch str.(type) {
+	case int:
+		var ok bool
+		if r, ok = str.(int); !ok {
+			return 0, false
+		}
+		break
+	case string:
+		var err error
+		r, err = strconv.Atoi(str.(string))
+		if err != nil {
+			fmt.Println(err)
+			return 0, false
+		}
+		break
+	default:
+		return 0, false
+	}
+
+	return r, true
+}
+
+func ToStr(n interface{}) (string, bool) {
+	switch n.(type) {
+	case string:
+		if r, ok := n.(string); ok {
+			return r, true
+		}
+		return "", false
+	case int:
+		if t, ok := n.(int); ok {
+			return strconv.Itoa(t), true
+		}
+		return "", false
+	default:
+		return "", false
 	}
 }
