@@ -3,14 +3,25 @@ package main
 import (
 	"context"
 	"fmt"
-	"mygo2/freeWheel"
+	"log"
+	"mygo2/httptest"
+	"net/http"
 	"runtime"
 	"sync"
 	"time"
 )
 
 func main()  {
-	freeWheel.TestReflect()
+	http.HandleFunc("/", httptest.SayHello)
+	http.HandleFunc("/login", httptest.Login)
+	http.HandleFunc("/test", httptest.Test)
+
+
+	err := http.ListenAndServe(":1234", nil)
+	if err != nil {
+		log.Fatal("ListenAndServe: ", err)
+	}
+	//freeWheel.TestReflect()
 }
 
 func worker(ctx context.Context, num int, wg *sync.WaitGroup)  {
