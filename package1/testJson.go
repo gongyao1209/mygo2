@@ -12,6 +12,7 @@ type Person struct {
 	Mobile 		string		`json:"mobile"`
 }
 
+//
 func NewPerson(id, age int, name, mobile string) *Person {
 	return &Person{
 		Id:id,
@@ -20,6 +21,7 @@ func NewPerson(id, age int, name, mobile string) *Person {
 		Mobile:mobile,
 	}
 }
+
 
 func JsonToPerson(str string)  {
 	p := Person{}

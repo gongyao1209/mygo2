@@ -16,7 +16,6 @@ func main()  {
 	http.HandleFunc("/login", httptest.Login)
 	http.HandleFunc("/test", httptest.Test)
 
-
 	err := http.ListenAndServe(":1234", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
