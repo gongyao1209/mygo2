@@ -1,9 +1,12 @@
 package httptest
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
+	"mygo2/db"
+	"mygo2/package1"
 	"net/http"
 	"net/url"
 	"regexp"
@@ -35,6 +38,10 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 		t, _ := template.ParseFiles("login.gtpl")
 		log.Print(t.Execute(w, nil))
 	} else {
+		cookie, _ := r.Cookie("username")
+		fmt.Fprintln(w, cookie)
+
+
 		// 校验必传
 		if len(r.Form["username"]) == 0 || len(r.Form["username"][0]) == 0 {
 			fmt.Fprintf(w, "username is need")
@@ -70,11 +77,32 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 }
 
 func Test(w http.ResponseWriter, r *http.Request)  {
-	r1 := url.Values{}
 
+	// 设置 cookie
+	expiration := time.Now()
+	expiration = expiration.AddDate(1, 0, 0)
+	cookie := http.Cookie{Name: "username", Value: "astaxie", Expires: expiration}
+	http.SetCookie(w, &cookie)
+
+	db.SETNX("name1", "gongyao1")
+
+	//
+	r1 := url.Values{}
 	r1.Set("name1", "gongyao1")
 	r1.Set("name2", "gongyao2")
 	r1.Add("name3", "gongyao3")
+
+	// json 解析
+	p := package1.NewPerson(1, 26, "巩尧", "17600972048")
+	// 合成json
+	if b, err := json.Marshal(p); err == nil {
+		fmt.Fprintf(w, string(b))
+
+		// json 解析到结构体里面
+		package1.JsonToPerson(string(b))
+		// 解析到 interface{} 里面
+		package1.JsonToOther(string(b))
+	}
 
 	fmt.Fprintf(w, r1.Encode())
 }
