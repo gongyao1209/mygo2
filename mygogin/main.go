@@ -2,8 +2,6 @@ package main
 
 import (
 	"mygo2/db"
-	_"mygo2/db"
-
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -52,7 +50,6 @@ curl -X POST \
   -H 'content-type: multipart/form-data' \
   -H 'postman-token: 8455203a-c358-16e1-e005-e8d881429acc' \
   -F file=@go.jpg
-
  */
 func uploadFile(ctx *gin.Context)  {
 	f, _ := ctx.FormFile("file")
