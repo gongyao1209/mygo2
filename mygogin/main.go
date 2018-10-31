@@ -35,7 +35,59 @@ func main()  {
 	//使用map传递参数
 	paramQueryMap(r)
 
+	// 上传文件
+	r.POST("/upload", uploadFile)
+
+	// 上传文件
+	r.POST("/upload1", uploadFiles)
+
 	r.Run(":12345")
+}
+
+/*
+
+curl -X POST \
+  http://127.0.0.1:12345/upload \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: multipart/form-data' \
+  -H 'postman-token: 8455203a-c358-16e1-e005-e8d881429acc' \
+  -F file=@go.jpg
+
+ */
+func uploadFile(ctx *gin.Context)  {
+	f, _ := ctx.FormFile("file")
+
+	fmt.Println(f.Filename)
+	//
+
+	ctx.JSON(http.StatusOK, gin.H{"file_name":f.Filename})
+}
+
+
+/**
+	curl -X POST \
+  http://127.0.0.1:12345/upload1 \
+  -H 'cache-control: no-cache' \
+  -H 'content-type: multipart/form-data' \
+  -H 'postman-token: 8bd3b5eb-fde4-c3ec-f993-fcf48ee5243b' \
+  -F 'upload[]=@go.jpg' \
+  -F 'upload[]=@QQ20180521-0.JPG'
+ */
+func uploadFiles(ctx *gin.Context)  {
+	form, err := ctx.MultipartForm()
+	if err != nil {
+		ctx.JSON(http.StatusOK, gin.H{"status":"error"})
+		return
+	}
+
+	files := form.File["upload[]"]
+
+	for _, f := range files {
+
+		fmt.Println(f.Filename)
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status":"success"})
 }
 
 //参数在path里面
