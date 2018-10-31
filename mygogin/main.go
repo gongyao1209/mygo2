@@ -1,6 +1,9 @@
 package main
 
 import (
+	"mygo2/db"
+	_"mygo2/db"
+
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -127,9 +130,10 @@ func paramQueryMap2(router *gin.RouterGroup)  {
 		ids := c.QueryMap("ids")
 		ids2 := c.QueryArray("ids")
 
+		v := db.Get("name1")
 
 		fmt.Println(ids)
 
-		c.String(http.StatusOK, fmt.Sprintf("map: %v, arr: %v", ids, ids2))
+		c.String(http.StatusOK, fmt.Sprintf("map: %v, arr: %v, redis %s", ids, ids2, v))
 	})
 }
