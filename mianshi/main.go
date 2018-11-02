@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"runtime"
 	"time"
 )
 
@@ -16,6 +17,8 @@ func main()  {
 		close(c)
 	}()
 
+	fmt.Println("count goroutine: ", runtime.NumGoroutine())
+
 	for  {
 		time.Sleep(1 * time.Second)
 
@@ -29,7 +32,7 @@ func main()  {
 			goto Gongyao
 		}
 	}
-
+	
 	Gongyao:
 		fmt.Println("gongyao")
 }
