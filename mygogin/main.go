@@ -6,7 +6,6 @@ import (
 )
 
 func sayHello(w http.ResponseWriter, r *http.Request)  {
-
 }
 
 func main()  {
