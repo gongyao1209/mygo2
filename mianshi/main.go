@@ -7,6 +7,16 @@ import (
 )
 
 func main()  {
+	ch := make(chan int)
+
+	go func() {
+		<-ch
+	}()
+
+	<-ch
+}
+
+func main1()  {
 	var c = make(chan int, 1)
 
 	go func() {
@@ -32,7 +42,7 @@ func main()  {
 			goto Gongyao
 		}
 	}
-	
+
 	Gongyao:
 		fmt.Println("gongyao")
 }
