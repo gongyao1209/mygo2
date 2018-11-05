@@ -3,17 +3,68 @@ package main
 import (
 	"fmt"
 	"runtime"
+	"sync"
 	"time"
 )
 
 func main()  {
-	ch := make(chan int)
+	ch1 := Producer()
+	Consumer(ch1)
 
-	go func() {
-		<-ch
-	}()
+	return
+	rangeChannel()
+	return
+	ch := make(chan int, 1)
+	defer close(ch)
 
-	<-ch
+	var wg sync.WaitGroup
+
+	fmt.Println("goroutine num1: ", runtime.NumGoroutine())
+
+	var m sync.RWMutex
+
+	for i := 1; i <= 10; i++ {
+		wg.Add(1)
+		go func(i int) {
+			defer func() {
+				wg.Done()
+				m.Unlock()
+			}()
+
+			m.Lock()
+			//ch <- i
+			//fmt.Println("add to channel, ", i)
+
+			select {
+			case ch <- i:
+				fmt.Println("add to channel, ", i)
+			default:
+				fmt.Println("close channel, ", i)
+			}
+		}(i)
+	}
+	fmt.Println("goroutine num2: ", runtime.NumGoroutine())
+
+	for {
+		select {
+		case c := <-ch:
+			fmt.Println(c)
+		case <-time.After(1 * time.Second): //超时
+			goto Gongyao
+		}
+	}
+
+	Gongyao:
+		fmt.Println("end")
+	//for c := range ch {
+	//	fmt.Println(c)
+	//}
+	//fmt.Println(<- ch) //当一个goroutine正在运行的时候，chan才有用
+	wg.Wait()
+
+	fmt.Println("goroutine num3: ", runtime.NumGoroutine())
+
+	return
 }
 
 func main1()  {
@@ -30,21 +81,21 @@ func main1()  {
 	fmt.Println("count goroutine: ", runtime.NumGoroutine())
 
 	for  {
-		time.Sleep(1 * time.Second)
-
 		select {
 		case v := <- c:
 			fmt.Println(v)
 			if v == 0 {
 				goto Gongyao
 			}
-		default:
+		case <-time.After(1 * time.Second):
 			goto Gongyao
 		}
 	}
 
 	Gongyao:
 		fmt.Println("gongyao")
+
+	return
 }
 
 func rangeArr()  {
@@ -103,5 +154,87 @@ func rangeMap()  {
 		}
 		counter ++
 	}
+}
 
+type mychan struct {
+	Ch chan int
+	Close bool
+	timeout time.Duration
+}
+
+func rangeChannel()  {
+	a := make(chan int, 10)
+	ch := mychan{Ch:a, Close:false}
+
+	//ch := make(chan int, 1)
+	//is_close := false
+
+	go func(ch1 *mychan) {
+		defer func() {
+			close(ch1.Ch)
+			ch1.Close = true
+		}()
+
+		for i := 0; i <= 100; i++ {
+			ch1.Ch <- i
+		}
+	}(&ch)
+
+	for  {
+		if ch.Close {
+			fmt.Println("close")
+			return
+		}
+
+		select {
+		case c := <-ch.Ch:
+			fmt.Println(c)
+		case <-time.After(1 * time.Second):
+			fmt.Println("timeout")
+			return
+		}
+	}
+}
+
+
+//信道的生产者消费者
+func Producer() *mychan {
+	ch := make(chan int, 1)
+	my_ch := mychan{
+		Ch:ch,
+		Close:false,
+		timeout: 600 * time.Millisecond,
+	}
+
+	go func() {
+		defer func() {
+			close(my_ch.Ch)
+			my_ch.Close = true
+		}()
+
+		for i := 0; i <= 20; i++ {
+			time.Sleep(10 * time.Millisecond)
+			my_ch.Ch <- i
+		}
+	}()
+
+	return &my_ch
+}
+
+func Consumer(mychan *mychan)  {
+	for  {
+		if mychan.Close {
+			goto end
+		}
+
+		select {
+		case c :=<- mychan.Ch:
+			fmt.Println("consumer: ", c)
+		case <-time.After(mychan.timeout):
+			goto end
+		}
+	}
+
+	end:
+		fmt.Println("End")
 }
