@@ -8,9 +8,20 @@ import (
 )
 
 func main()  {
-	ch1 := Producer()
-	Consumer(ch1)
-
+	//c := make(chan int)
+	//
+	//go func() {
+	//	time.Sleep(1 * time.Second)
+	//	//c <- 1
+	//	fmt.Println(<- c)
+	//}()
+	//
+	//fmt.Println(1)
+	//c <- 1
+	//fmt.Println(2)
+	rangeMap()
+	//rangeSlice()
+	//TestPC()
 	return
 	rangeChannel()
 	return
@@ -101,27 +112,28 @@ func main1()  {
 func rangeArr()  {
 	a := [5]int{1, 2, 3, 4, 5}
 	var r [5]int
-
-	fmt.Println("rangeArr a. ", a)
-
-	for k, v := range a { //a is a copy
-		if k == 0 {
+	for key, value := range a {
+		if key == 0 {
 			a[1] = 12
 			a[2] = 13
 		}
 
-		r[k] = v
+		r[key] = value
 	}
 
-	fmt.Println("rangeArr a. ", a)
-	fmt.Println("rangeArr r. ", r)
+	fmt.Println(r)
+}
+
+func getArray() (a [10000000]string) {
+	for i := 0; i < 10000000; i++ {
+		a[i] = "My Name Is Gongyao"
+	}
+	return
 }
 
 func rangeSlice()  {
 	a := []int{1, 2, 3, 4, 5}
 	var r [5]int
-
-	fmt.Println("rangeSlice a. ", a)
 
 	for k, v := range a { // 这里也是副本，但是 由于slice的结构不同
 		if k == 0 {
@@ -132,26 +144,27 @@ func rangeSlice()  {
 		r[k] = v
 	}
 
-	fmt.Println("rangeSlice a. ", a)
-	fmt.Println("rangeSlice r. ", r)
+	fmt.Println(r)
 }
 
 func rangeMap()  {
 	m := map[string]interface{} {
-		"name":"gongyao",
+		"name":"wangliang",
 		"age":26,
-		"home":"shanxiheshun",
+		"home":"shanxi",
 		"town":"taiyuan",
 	}
 
 	counter := 0
 	for k, v := range m{ //map 是无序的 map也是传的指针
-
 		fmt.Println(k, " ", v)
-
 		if counter == 0 {
 			delete(m, "age") //因为map是无序的，所以删除了 可能输出也可能不输出
 		}
+		if counter == 1 {
+			m["controy"] = "china" //同理，可能输出可能不输出
+		}
+
 		counter ++
 	}
 }
@@ -227,14 +240,22 @@ func Consumer(mychan *mychan)  {
 			goto end
 		}
 
-		select {
-		case c :=<- mychan.Ch:
+		for c := range mychan.Ch {
 			fmt.Println("consumer: ", c)
-		case <-time.After(mychan.timeout):
-			goto end
 		}
+		//select {
+		//case c :=<- mychan.Ch:
+		//	fmt.Println("consumer: ", c)
+		//case <-time.After(mychan.timeout):
+		//	goto end
+		//}
 	}
 
 	end:
 		fmt.Println("End")
+}
+
+func TestPC()  {
+	mych := Producer()
+	Consumer(mych)
 }
