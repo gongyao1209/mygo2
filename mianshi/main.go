@@ -3,79 +3,96 @@ package main
 import (
 	"fmt"
 	"runtime"
-	"sync"
 	"time"
 )
 
 func main()  {
-	//c := make(chan int)
-	//
-	//go func() {
-	//	time.Sleep(1 * time.Second)
-	//	//c <- 1
-	//	fmt.Println(<- c)
-	//}()
-	//
-	//fmt.Println(1)
-	//c <- 1
-	//fmt.Println(2)
-	rangeMap()
-	//rangeSlice()
-	//TestPC()
-	return
-	rangeChannel()
-	return
-	ch := make(chan int, 1)
+
+	//go TestChannel2() //
+	TestChannel1()
+	TestChannel2() //只有当这个的时候会报错，和main方法一个goroutine，所以是阻塞主进程了，所以才报错
+}
+
+func TestChannel1()  {
+	ch := make(chan int)
 	defer close(ch)
 
-	var wg sync.WaitGroup
+	go func() {
+		for c := range ch {
+			fmt.Println("ch value : ", c)
+		}
+	}()
 
-	fmt.Println("goroutine num1: ", runtime.NumGoroutine())
-
-	var m sync.RWMutex
-
-	for i := 1; i <= 10; i++ {
-		wg.Add(1)
-		go func(i int) {
-			defer func() {
-				wg.Done()
-				m.Unlock()
-			}()
-
-			m.Lock()
-			//ch <- i
-			//fmt.Println("add to channel, ", i)
-
-			select {
-			case ch <- i:
-				fmt.Println("add to channel, ", i)
-			default:
-				fmt.Println("close channel, ", i)
-			}
-		}(i)
+	for i := 0; i < 10; i++ {
+		ch <- i
 	}
-	fmt.Println("goroutine num2: ", runtime.NumGoroutine())
+
+	time.Sleep(1 * time.Second)
+}
+
+func TestChannel2()  {
+	ch := make(chan int)
+
+	go func() {
+		defer close(ch)
+		for i := 0; i < 10; i++ {
+			ch <- i + 1
+		}
+	}()
+
+	for c := range ch { //这里可能引起阻塞
+		fmt.Println("ch value : ", c)
+	}
+}
+
+func TestChannel2_1()  {
+	ch := make(chan int)
+
+	go func() {
+		for i := 0; i < 10; i++ {
+			ch <- i
+		}
+	}()
+
+	go func() {
+		for c := range ch {
+			fmt.Println("ch value : ", c)
+		}
+	}()
+
+	time.Sleep(1 * time.Second)
+}
+
+func TestChannel2_2()  {
+	ch := make(chan int, 1)
+
+	go func() {
+		defer close(ch)
+		for i := 0; i < 10; i++ {
+			ch <- i
+		}
+	}()
+
+	s := make([]int, 0, 10)
 
 	for {
 		select {
-		case c := <-ch:
-			fmt.Println(c)
-		case <-time.After(1 * time.Second): //超时
-			goto Gongyao
+		case c, ok :=<- ch:
+			if !ok {
+				fmt.Println("CLOSE")
+				goto End
+			}
+			s = append(s, c)
+			fmt.Println("ch value : ", c)
+		case <-time.After(1 * time.Second):
+			goto End
 		}
 	}
 
-	Gongyao:
+	End:
 		fmt.Println("end")
-	//for c := range ch {
-	//	fmt.Println(c)
-	//}
-	//fmt.Println(<- ch) //当一个goroutine正在运行的时候，chan才有用
-	wg.Wait()
 
-	fmt.Println("goroutine num3: ", runtime.NumGoroutine())
-
-	return
+	fmt.Println(s)
 }
 
 func main1()  {

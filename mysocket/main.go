@@ -34,6 +34,8 @@ func handleConn(conn net.Conn)  {
 			return
 		}
 
+		msg += time.Now().String()
+		
 		conn.Write([]byte(msg))
 	}
 }
