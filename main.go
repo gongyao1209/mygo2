@@ -2,6 +2,7 @@ package main
 
 import (
 	"mygo2/db"
+	"time"
 
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -95,7 +96,13 @@ func paramInPath(router *gin.Engine)  {
 
 		strconv.Atoi(name)
 
-		//TODO Do Something
+		// 开辟go程完成后续工作，这个是没有问题的。工作肯定能做完
+		go func() {
+			for i := 0; i < 10; i++ {
+				time.Sleep(5 * time.Second)
+				fmt.Println(time.Now().String(), " check goroutine is worked, i := ", i)
+			}
+		}()
 
 		c.String(http.StatusOK, "Hello %s", name)
 	})
