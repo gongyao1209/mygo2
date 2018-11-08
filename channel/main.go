@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
+	"mygo2/channel/publish"
 	"sync"
 	"time"
 )
 
 //主要是阻塞
-func main()  {
+func main1()  {
 
 	//如果说 信道channel 是个盒子，往里面放东西的人 是 生产者，从里面拿东西的人作为消费者
 	//go TestChannel2() //
@@ -220,4 +221,8 @@ func Consumer(mychan *mychan)  {
 
 end:
 	fmt.Println("End")
+}
+
+func main()  {
+	publish.Test()
 }

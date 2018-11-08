@@ -13,14 +13,14 @@ func handleConn(conn net.Conn)  {
 	}()
 
 	//conn.Write([]byte("hello socket\n"))
-
+	// 连接循环十次 数据
 	for i:= 0; i < 10; i++ {
 		fmt.Printf("accept i = %d\n", i)
 
 		//设置 读取 阻塞的最迟时间
 		conn.SetReadDeadline(time.Now().Add(time.Second * 10))
 		var buf = make([]byte, 10)
-		n, err := conn.Read(buf)
+		n, err := conn.Read(buf) //读数据
 		if err != nil {
 			fmt.Printf("Read Error")
 			if nerr, ok := err.(net.Error); ok && nerr.Timeout() { //如果超时 不输入数据那么直接返回
@@ -36,7 +36,7 @@ func handleConn(conn net.Conn)  {
 
 		msg += time.Now().String()
 		
-		conn.Write([]byte(msg))
+		conn.Write([]byte(msg)) //写数据
 	}
 }
 
@@ -55,7 +55,9 @@ func main()  {
 		}
 		fmt.Println("conn Success", conn.RemoteAddr().String())
 
+		// 里面是连接需要做什么
 		go handleConn(conn)
+		//handleConn(conn)
 	}
 
 	//loopClient()
