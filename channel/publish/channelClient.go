@@ -12,7 +12,7 @@ import (
 type client chan interface{}
 
 type publisher struct {
-	Client map[string]client
+	Client map[string]PushMsg
 }
 
 func (p *publisher)Publish(msg string)  {
@@ -43,26 +43,30 @@ func (p *publisher)CloseName(name string)  {
 }
 
 func Test()  {
-	fmt.Println("1, ", runtime.NumGoroutine())
-	ch1 := get_driver("gongyao")
-	fmt.Println("2, ", runtime.NumGoroutine())
-	ch2 := get_driver("yaoke")
-	fmt.Println("3, ", runtime.NumGoroutine())
+	//fmt.Println("1, ", runtime.NumGoroutine())
+	//ch1 := get_driver("gongyao")
+	//fmt.Println("2, ", runtime.NumGoroutine())
+	//ch2 := get_driver("yaoke")
+	//fmt.Println("3, ", runtime.NumGoroutine())
 
+	g1 := NewGroup()
+
+	fmt.Println("1, ", runtime.NumGoroutine())
 	//ch2 := make(chan interface{}, 10)
 
-	p := publisher{Client:make(map[string]client)}
-	p.Client["a"] = ch1
-	p.Client["b"] = ch2
+	p := publisher{Client:make(map[string]PushMsg)}
+
+	p.Client["a"] = g1.Msg
+	//p.Client["b"] = ch2
 
 	var wg sync.WaitGroup
-	for i := 1; i <= 100; i ++ {
+	for i := 1; i <= 1; i ++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			p.Publish(string(i))
 		}()
-
+		fmt.Println("2, ", runtime.NumGoroutine())
 	}
 
 	wg.Wait()
@@ -71,7 +75,7 @@ func Test()  {
 	//	p.Publish("gongyao2")
 	//	p.Publish("gongyao3")
 	//
-		p.CloseAll()
+	//	p.CloseAll()
 		//p.CloseName("b")
 	//}()
 	time.Sleep(1 * time.Second)

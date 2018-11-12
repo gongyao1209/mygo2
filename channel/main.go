@@ -225,4 +225,5 @@ end:
 
 func main()  {
 	publish.Test()
+	//locktest.Test1()
 }
