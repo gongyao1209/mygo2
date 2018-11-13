@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"mygo2/mianshi/funcTest"
+)
 
 func main()  {
-	fmt.Println("Hello World!")
+	funcTest.Test2()
+	//panicTest.Test()
+	//funcTest.MyTest()
+	//fmt.Println("Hello World!")
 }
+
