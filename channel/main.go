@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"mygo2/channel/publish"
+	"mygo2/channel/cancelsignal"
 	"sync"
 	"time"
 )
@@ -224,6 +224,7 @@ end:
 }
 
 func main()  {
-	publish.Test()
+	cancelsignal.NormalCancel3()
+	//publish.Test()
 	//locktest.Test1()
 }
