@@ -11,7 +11,7 @@ import "testing"
 //	}
 //}
 
-
+/*
 const N  =  1000
 
 func initSlice() []string{
@@ -37,5 +37,31 @@ func BenchmarkRangeForSlice(b *testing.B) {
 	b.ResetTimer()
 	for i:=0; i<b.N;i++  {
 		RangeForSlice(s)
+	}
+}
+*/
+
+
+func BenchmarkStringPlus(b *testing.B) {
+	for i:=0;i<b.N;i++{
+		StringPlus()
+	}
+}
+
+func BenchmarkStringPlusFtm(b *testing.B) {
+	for i:=0;i<b.N;i++{
+		StringPlusFtm()
+	}
+}
+
+func BenchmarkStringPlusJoin(b *testing.B) {
+	for i:=0;i<b.N;i++{
+		StringPlusJoin()
+	}
+}
+
+func BenchmarkStringPlusBuffer(b *testing.B) {
+	for i:=0;i<b.N;i++{
+		StringPlusBuffer()
 	}
 }

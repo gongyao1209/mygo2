@@ -11,6 +11,16 @@ import (
 )
 
 func main()  {
+
+	cur := time.Now().Format("2006-01-02 15:04:05")
+	fmt.Println(cur)
+
+	cur2 := time.Now()
+	ti2, _ := time.Parse("2006-01-02 15:04:05", "2019-01-26 10:06:24")
+	a := cur2.Before(ti2)
+	fmt.Println(a)
+	return
+
 	r := gin.Default()
 
 	r.GET("/ping", func(c *gin.Context) {

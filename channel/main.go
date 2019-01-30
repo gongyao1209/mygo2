@@ -8,11 +8,12 @@ import (
 )
 
 //主要是阻塞
-func main1()  {
+func main()  {
 
 	//如果说 信道channel 是个盒子，往里面放东西的人 是 生产者，从里面拿东西的人作为消费者
 	//go TestChannel2() //
 	TestChannel1()
+	return
 	//TestChannel2() //只有当这个的时候会报错，和main方法一个goroutine，所以是阻塞主进程了，所以才报错
 
 	/**
@@ -223,7 +224,7 @@ end:
 	fmt.Println("End")
 }
 
-func main()  {
+func main1()  {
 	cancelsignal.NormalCancel3()
 	//publish.Test()
 	//locktest.Test1()
