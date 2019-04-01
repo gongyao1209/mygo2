@@ -41,26 +41,26 @@ func handleConn(conn net.Conn)  {
 }
 
 func main()  {
-	//一直在监听端口
-	listener, err := net.Listen("tcp", ":12344")
-	if err != nil {
-		fmt.Println("Listen Err ", err)
-	}
+	////一直在监听端口
+	//listener, err := net.Listen("tcp", ":12344")
+	//if err != nil {
+	//	fmt.Println("Listen Err ", err)
+	//}
+	//
+	////一直在监听端口 每次连接一次循环
+	//for {
+	//	conn, err := listener.Accept()
+	//	if err != nil {
+	//		fmt.Println("Conn Err ", err)
+	//	}
+	//	fmt.Println("conn Success", conn.RemoteAddr().String())
+	//
+	//	// 里面是连接需要做什么
+	//	go handleConn(conn)
+	//	//handleConn(conn)
+	//}
 
-	//一直在监听端口 每次连接一次循环
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			fmt.Println("Conn Err ", err)
-		}
-		fmt.Println("conn Success", conn.RemoteAddr().String())
-
-		// 里面是连接需要做什么
-		go handleConn(conn)
-		//handleConn(conn)
-	}
-
-	//loopClient()
+	loopClient()
 }
 
 func loopClient()  {

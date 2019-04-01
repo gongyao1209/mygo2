@@ -13,14 +13,13 @@ func main()  {
 	//如果说 信道channel 是个盒子，往里面放东西的人 是 生产者，从里面拿东西的人作为消费者
 	//go TestChannel2() //
 	TestChannel1()
+	TestChannel2() //只有当这个的时候会报错，和main方法一个goroutine，所以是阻塞主进程了，所以才报错
 	return
-	//TestChannel2() //只有当这个的时候会报错，和main方法一个goroutine，所以是阻塞主进程了，所以才报错
-
 	/**
 	 *	这个为什么会出错？
 	 *  从信道中获取数据会阻塞 main程，因为信道没有被生产者关闭，而且使用for range从信道中读数据没有超时限制，所里这里就一直阻塞
 	 */
-	TestChannel2Error()
+	//TestChannel2Error()
 
 	// 改进方法 1
 	// 信道的生产者 关闭信道，还是使用 for range 从信道中读取数据
