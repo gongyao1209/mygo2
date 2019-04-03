@@ -11,6 +11,9 @@ import (
 )
 
 func main()  {
+	// 测试数据库
+	db.GetData()
+	return
 
 	cur := time.Now().Format("2006-01-02 15:04:05")
 	fmt.Println(cur)
