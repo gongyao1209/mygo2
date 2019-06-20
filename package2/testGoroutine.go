@@ -11,7 +11,7 @@ import (
 )
 
 // 一直在运行的函数
-func boring(msg string)  {
+func boring(msg string) {
 	for i := 0; ; i++ {
 		fmt.Println(msg, i)
 		//time.Sleep(time.Second) //睡😴一秒
@@ -19,7 +19,7 @@ func boring(msg string)  {
 	}
 }
 
-func Test()  { //主方法一个进程
+func Test() { //主方法一个进程
 	//var wg sync.WaitGroup
 	//wg.Add(1)
 	go func() { //goroutine 新开一个进程
@@ -35,40 +35,37 @@ func Test()  { //主方法一个进程
 
 //--信道保证 同步
 var syn chan int = make(chan int)
-func foo()  {
-	for i:= 0; i <= 5; i++ {
+
+func foo() {
+	for i := 0; i <= 5; i++ {
 		fmt.Println("I am runing, ", i)
 	}
 	syn <- 1 //
 }
-func Test2()  {
+func Test2() {
 	go foo()
-	i :=<-syn
+	i := <-syn
 	fmt.Println(i)
 }
 
-
 //信道 一个读一个写才能畅通无阻。可以使用信道进行交流和同步
-func boring1(msg string, ch chan string)  {
+func boring1(msg string, ch chan string) {
 	for i := 0; ; i++ {
 		ch <- fmt.Sprintf("Runing: %s; I: %d", msg, i)
 		time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
 	}
 }
-func Test3()  {
+func Test3() {
 	c := make(chan string, 1)
 	go boring1("boring", c)
 	go boring1("wocao", c)
 
-
 	for i := 0; i < 5; i++ {
-		fmt.Println("Main func: ", <- c)
+		fmt.Println("Main func: ", <-c)
 	}
-
 
 	fmt.Println("I am leaving")
 }
-
 
 // 生产者模式
 //生成器(Generator)
@@ -83,7 +80,7 @@ func boring2(msg string) <-chan string {
 	return ch
 }
 
-func Test4()  { // 和 Test8 类似，Test4执行完之后，boring2 中的 goroutine并没有退出，只是因为 信道给阻塞了
+func Test4() { // 和 Test8 类似，Test4执行完之后，boring2 中的 goroutine并没有退出，只是因为 信道给阻塞了
 	ch := boring2("boring")
 
 	for i := 0; i < 5; i++ {
@@ -93,7 +90,7 @@ func Test4()  { // 和 Test8 类似，Test4执行完之后，boring2 中的 goro
 	fmt.Println("You are boring, I am leaving")
 }
 
-func Test5()  {
+func Test5() {
 	gongyao := boring2("gongyao")
 	yaoke := boring2("yaoke")
 
@@ -109,14 +106,14 @@ func fanIn(ch1, ch2 <-chan string) chan string {
 	c := make(chan string)
 
 	go func() {
-		for  { //一直要循环
-			c <- <- ch1
+		for { //一直要循环
+			c <- <-ch1
 		}
 	}()
 
 	go func() {
-		for  {
-			c <- <- ch2
+		for {
+			c <- <-ch2
 		}
 
 	}()
@@ -124,7 +121,7 @@ func fanIn(ch1, ch2 <-chan string) chan string {
 	return c
 }
 
-func Test6()  {
+func Test6() {
 	c := fanIn(boring2("gongyao"), boring2("yaoke"))
 
 	for i := 0; i < 5; i++ {
@@ -132,7 +129,6 @@ func Test6()  {
 	}
 	fmt.Println("You are boring, I am leaving")
 }
-
 
 func Test7() {
 	c := boring2("Joe")
@@ -151,7 +147,6 @@ func Test7() {
 	//}
 }
 
-
 func boring3(msg string, quit chan bool) chan string {
 	ch := make(chan string)
 
@@ -160,7 +155,7 @@ func boring3(msg string, quit chan bool) chan string {
 			select {
 			case ch <- fmt.Sprintf("Boring3, msg: %s, i: %d", msg, i):
 				time.Sleep(time.Duration(rand.Intn(1e3)) * time.Millisecond)
-			case <- quit:
+			case <-quit:
 				return //退出 goroutine
 			}
 		}
@@ -168,14 +163,14 @@ func boring3(msg string, quit chan bool) chan string {
 
 	return ch //返回一个信道的，函数里面 go func 的，基本都是生产者模式
 }
-func Test8()  {
+func Test8() {
 	quit := make(chan bool)
 	c := boring3("gongyao", quit)
 
 	go func(ch chan string, quit chan bool) {
-		for i:= 0; i < 100; i++ {
+		for i := 0; i < 100; i++ {
 			select {
-			case a :=<-ch:
+			case a := <-ch:
 				fmt.Println(a)
 			case <-quit:
 				return
@@ -194,10 +189,10 @@ func Test8()  {
 	//	}
 	//}()
 	time.Sleep(5 * time.Second)
-	quit<-true //退出 goroutine
+	quit <- true //退出 goroutine
 }
 
-func Test10()  {
+func Test10() {
 
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -205,9 +200,9 @@ func Test10()  {
 		ch := make(chan int)
 
 		go func(ch chan int) {
-			for i:= 0; ; i++ {
+			for i := 0; ; i++ {
 				select {
-				case ch<-i:
+				case ch <- i:
 					fmt.Println("go: ", i)
 				case <-ctx2.Done():
 					return
@@ -227,7 +222,6 @@ func Test10()  {
 	}
 }
 
-
 func f(left, right chan int) {
 	left <- <-right
 }
@@ -244,28 +238,28 @@ func Test9() { //菊花链 嗷嗷待哺的信道
 	}
 	go func(c chan int) {
 		c <- 2
-		}(right)
+	}(right)
 	fmt.Println(<-leftmost)
 }
 
 //------------------------------------------GO 并发模式------------------------------------------------
 
 //生产者
-func Producer(factor int, ch chan int)  {
+func Producer(factor int, ch chan int) {
 	for i := 1; ; i++ {
 		ch <- factor * i
 	}
 }
 
 //消费者
-func Consumer(ch chan int)  {
+func Consumer(ch chan int) {
 	for value := range ch {
 		fmt.Println(value)
 	}
 }
 
 //不稳定的退出
-func Test1010_01()  {
+func Test1010_01() {
 	ch := make(chan int, 64)
 
 	go func(ch chan int) {
@@ -282,7 +276,7 @@ func Test1010_01()  {
 }
 
 //使用 quit 退出
-func Test1010_02()  {
+func Test1010_02() {
 	ch := make(chan int, 64)
 	quit := make(chan bool)
 
@@ -292,7 +286,7 @@ func Test1010_02()  {
 			case <-quit:
 				return
 			case ch <- 10 * i:
-				}
+			}
 		}
 	}(ch, quit)
 
@@ -309,7 +303,7 @@ func Test1010_02()  {
 	go func(ch chan int, quit chan bool) {
 		for value := range ch {
 			if value > 377262 {
-				quit<-true
+				quit <- true
 				return
 			}
 
@@ -322,7 +316,7 @@ func Test1010_02()  {
 }
 
 //安全的退出 goroutine
-func Test1010_03()  {
+func Test1010_03() {
 	ch := make(chan int, 64)
 	ctx, cancel := context.WithCancel(context.Background())
 
@@ -362,10 +356,10 @@ func Test1010_03()  {
 
 type Students struct {
 	Age int
-	m sync.RWMutex
+	m   sync.RWMutex
 }
 
-func (s *Students)addAge(num int, p string)  {
+func (s *Students) addAge(num int, p string) {
 	s.m.Lock()
 	//defer s.m.Unlock()
 	s.m.RLock() //锁🔐
@@ -378,13 +372,12 @@ func (s *Students)addAge(num int, p string)  {
 	}
 }
 
-func Test1012_01()  {
-	stu := &Students{Age:0}
+func Test1012_01() {
+	stu := &Students{Age: 0}
 
 	go stu.addAge(10, "--------")
 	go stu.addAge(10000, "********")
 	go stu.addAge(100000000, "&&&&&&&&")
-
 
 	time.Sleep(1 * time.Second)
 	fmt.Println(stu)
@@ -392,7 +385,7 @@ func Test1012_01()  {
 
 //----其他并发
 // 控制并发数据
-func Test1012_02()  {
+func Test1012_02() {
 	ch := make(chan bool, 3)
 	var wg sync.WaitGroup
 	fmt.Println("go number1 : ", runtime.NumGoroutine())
@@ -407,14 +400,13 @@ func Test1012_02()  {
 				wg.Done()
 			}()
 			fmt.Println(i)
-			<- ch
+			<-ch
 		}(ch, i)
 	}
 
 	fmt.Println("go number2 : ", runtime.NumGoroutine())
 	wg.Wait()
 }
-
 
 // 返回生成自然数序列的管道: 2, 3, 4, ...
 func GenerateNatural() chan int {

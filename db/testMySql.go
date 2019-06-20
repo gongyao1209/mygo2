@@ -9,7 +9,7 @@ import (
 var db *sql.DB
 var err error
 
-func init()  {
+func init() {
 	// Dsn: "user:password@tcp(127.0.0.1:3306)/test"
 	dsn := "gongyao:Passw0rd@tcp(127.0.0.1:3306)/learning"
 	db, err = sql.Open("mysql", dsn)
@@ -26,9 +26,9 @@ func GetDB() *sql.DB {
 }
 
 type Temp struct {
-	Id int	`json:"id"`
+	Id      int    `json:"id"`
 	Student string `json:"student"`
-	Class string `json:"class"`
+	Class   string `json:"class"`
 }
 
 func GetData() Temp {

@@ -9,12 +9,12 @@ import (
 	"os"
 )
 
-func sayHello(w http.ResponseWriter, r *http.Request)  {
+func sayHello(w http.ResponseWriter, r *http.Request) {
 	db.GetData()
 }
 
-func main1()  {
-	
+func main1() {
+
 	http.HandleFunc("/", sayHello)
 
 	err := http.ListenAndServe(":9091", nil)
@@ -24,7 +24,7 @@ func main1()  {
 	}
 }
 
-func main()  {
+func main() {
 	// 写日志
 	gin.DisableConsoleColor()
 
@@ -33,7 +33,6 @@ func main()  {
 	os.Open()
 	//gin.DefaultWriter = io.MultiWriter(f)
 	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
-
 
 	r := gin.New()
 
@@ -46,7 +45,7 @@ func main()  {
 		//da, _ := json.Marshal(db.GetData())
 
 		c.JSON(200, gin.H{
-			"message":"pong1",
+			"message": "pong1",
 			//da
 		})
 	})
@@ -57,22 +56,22 @@ func main()  {
 // =====================================POST传递参数=========================================
 
 type Login struct {
-	User		string	`form:"user" json:"user" binding:"required"`
-	Password	string	`form:"password" json:"password" binding:"-"`
+	User     string `form:"user" json:"user" binding:"required"`
+	Password string `form:"password" json:"password" binding:"-"`
 }
 
-func testPost(r *gin.Engine)  {
+func testPost(r *gin.Engine) {
 	r.POST("/loginJson", testPost1)
 
 	r.POST("/loginPost", func(ctx *gin.Context) {
 		var form Login
 		if err := ctx.ShouldBind(&form); err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
 		if form.User != "manu" || form.Password != "123" {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"status":"unauthorized"})
+			ctx.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized"})
 			return
 		}
 
@@ -83,12 +82,12 @@ func testPost(r *gin.Engine)  {
 func testPost1(ctx *gin.Context) {
 	var json Login
 	if err := ctx.ShouldBindJSON(&json); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if json.User != "manu" || json.Password != "123" {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"status":"unauthorized"})
+		ctx.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized"})
 		return
 	}
 

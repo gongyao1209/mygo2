@@ -27,14 +27,14 @@ func DeferCall() interface{} {
 	return "a"
 }
 
-func DeffCall_1() (r int)  {
+func DeffCall_1() (r int) {
 	defer func() {
 		r++
 	}()
 	return 1
 }
 
-func DeffCall_2() (r int)  {
+func DeffCall_2() (r int) {
 	t := 5
 	defer func() {
 		t = t + 5
@@ -55,7 +55,7 @@ func calc(index string, a, b int) int {
 	return ret
 }
 
-func DefferCall_4()  {
+func DefferCall_4() {
 	a := 1
 	b := 2
 
@@ -72,7 +72,6 @@ func DefferCall_4()  {
 	}()
 	//defer calc("1", a, calc("10", a, calc("100", a, b))) //2
 
-
 	a = 0
 	defer calc("2", a, calc("20", a, b))
 	b = 1
@@ -87,7 +86,7 @@ func add1(a, b *int) int {
 	return *b
 }
 
-func DefferCall_5()  {
+func DefferCall_5() {
 	a := 1
 	b := 2
 
@@ -97,21 +96,20 @@ func DefferCall_5()  {
 
 }
 
-
 //---------
 type student struct {
 	Name string
-	Age int
+	Age  int
 }
 
 // 这道题主要考的是 for 循环里面 临时变量的创建
-func PaseStudent()  {
+func PaseStudent() {
 	m := make(map[string]*student)
 
 	stus := []student{
-		{Name:"gongyao1", Age:1},
-		{Name:"gongyao2", Age:2},
-		{Name:"gongyao3", Age:3},
+		{Name: "gongyao1", Age: 1},
+		{Name: "gongyao2", Age: 2},
+		{Name: "gongyao3", Age: 3},
 	}
 
 	for k, stu := range stus { //stu 属于创建的临时变量，而且并不是每一次新建都会创建，而是只创建一次
@@ -123,7 +121,7 @@ func PaseStudent()  {
 //---------
 
 //主要考察 闭包函数 变量的作用域
-func Test1014_01()  {
+func Test1014_01() {
 	runtime.GOMAXPROCS(1)
 	wg := sync.WaitGroup{}
 
@@ -131,14 +129,14 @@ func Test1014_01()  {
 
 	for i := 0; i < 10; i++ {
 		go func() {
-			fmt.Println("go 1 :" , i) //打印i
+			fmt.Println("go 1 :", i) //打印i
 			wg.Done()
 		}()
 	}
 
 	for i := 0; i < 10; i++ {
 		go func(i int) {
-			fmt.Println("go 2 :" , i)
+			fmt.Println("go 2 :", i)
 			wg.Done()
 		}(i) //把i作为参数传递进行打印
 	}
@@ -147,35 +145,35 @@ func Test1014_01()  {
 }
 
 //--------
-type People struct{
+type People struct {
 	Name string
 }
 
-func (p *People)ShowA()  {
+func (p *People) ShowA() {
 	fmt.Println("show A")
 	p.ShowB()
 }
-func (p *People)ShowB()  {
+func (p *People) ShowB() {
 	fmt.Println("People show B ", p.Name)
 }
 
 type Teacher struct {
 	People
 }
-func (t *Teacher)ShowB()  {
+
+func (t *Teacher) ShowB() {
 	fmt.Println("Teacher show B")
 }
 
-func Test1014_02()  {
+func Test1014_02() {
 	t := Teacher{}
 
 	t.ShowA() //主要考察Go中 虽然没有继承，但是这种语法怎么办？
 	t.ShowB()
 }
 
-
 //------
-func Test1014_03()  {
+func Test1014_03() {
 	runtime.GOMAXPROCS(1)
 
 	int_chan := make(chan int, 1)
@@ -192,9 +190,8 @@ func Test1014_03()  {
 	}
 }
 
-
 //----
-func Test1014_04()  {
+func Test1014_04() {
 	s := make([]int, 5)
 
 	s = append(s, []int{1, 2, 3}...)
@@ -209,7 +206,7 @@ type UserAges struct {
 	sync.Mutex
 }
 
-func (u *UserAges) Add(name string, age int)  {
+func (u *UserAges) Add(name string, age int) {
 	u.Lock()
 	defer u.Unlock()
 
@@ -217,16 +214,16 @@ func (u *UserAges) Add(name string, age int)  {
 }
 
 func (u *UserAges) Get(name string) int {
-	if age,ok := u.ages[name]; ok {
+	if age, ok := u.ages[name]; ok {
 		return age
 	}
 
 	return -1
 }
 
-func Test1014_05()  {
+func Test1014_05() {
 	u := UserAges{
-		ages:make(map[string]int),
+		ages: make(map[string]int),
 	}
 
 	u.Add("gongyao", 26)
@@ -235,7 +232,6 @@ func Test1014_05()  {
 	fmt.Println(u.Get("gongyao"))
 }
 
-
 //------
 
 type People2 interface {
@@ -243,7 +239,6 @@ type People2 interface {
 }
 
 type Student2 struct {
-
 }
 
 func (s *Student2) Speak(think string) (talk string) {
@@ -256,7 +251,7 @@ func (s *Student2) Speak(think string) (talk string) {
 	return
 }
 
-func Test1014_06()  {
+func Test1014_06() {
 	//var p People2
 	s := Student2{}
 	fmt.Println(s.Speak("bitch"))

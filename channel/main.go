@@ -8,7 +8,7 @@ import (
 )
 
 //主要是阻塞
-func main()  {
+func main() {
 
 	//如果说 信道channel 是个盒子，往里面放东西的人 是 生产者，从里面拿东西的人作为消费者
 	//go TestChannel2() //
@@ -39,8 +39,7 @@ func main()  {
 	//所以针对 main程的阻塞，1、信道是要在生产者中关闭 2、进行超时限制，防止阻塞
 }
 
-
-func TestChannel1()  {
+func TestChannel1() {
 	ch := make(chan int)
 	defer close(ch)
 
@@ -57,7 +56,7 @@ func TestChannel1()  {
 	time.Sleep(1 * time.Second)
 }
 
-func TestChannel2()  {
+func TestChannel2() {
 	ch := make(chan int)
 
 	go func() {
@@ -72,7 +71,7 @@ func TestChannel2()  {
 	}
 }
 
-func TestChannel2Error()  {
+func TestChannel2Error() {
 	ch := make(chan int)
 	defer close(ch)
 
@@ -88,7 +87,7 @@ func TestChannel2Error()  {
 	}
 }
 
-func TestChannel2_1()  {
+func TestChannel2_1() {
 	ch := make(chan int)
 
 	var wg sync.WaitGroup
@@ -116,7 +115,7 @@ func TestChannel2_1()  {
 	//time.Sleep(1 * time.Second)
 }
 
-func TestChannel2_1Error()  {
+func TestChannel2_1Error() {
 	ch := make(chan int)
 	defer close(ch)
 
@@ -152,8 +151,7 @@ func TestChannel2_1Error()  {
 	time.Sleep(1 * time.Second)
 }
 
-
-func TestChannel2_2()  {
+func TestChannel2_2() {
 	ch := make(chan int, 1)
 
 	go func() {
@@ -167,7 +165,7 @@ func TestChannel2_2()  {
 
 	for {
 		select {
-		case c, ok :=<- ch:
+		case c, ok := <-ch:
 			if !ok {
 				fmt.Println("CLOSE")
 				goto End
@@ -179,23 +177,24 @@ func TestChannel2_2()  {
 		}
 	}
 
-	End:
-		fmt.Println("end")
+End:
+	fmt.Println("end")
 
 	fmt.Println(s)
 }
 
 type mychan struct {
-	Ch chan int
-	Close bool
+	Ch      chan int
+	Close   bool
 	timeout time.Duration
 }
+
 //信道的生产者消费者
 func Producer() *mychan {
 	ch := make(chan int, 1)
 	my_ch := mychan{
-		Ch:ch,
-		Close:false,
+		Ch:      ch,
+		Close:   false,
 		timeout: 600 * time.Millisecond,
 	}
 
@@ -214,8 +213,8 @@ func Producer() *mychan {
 	return &my_ch
 }
 
-func Consumer(mychan *mychan)  {
-	for  {
+func Consumer(mychan *mychan) {
+	for {
 		if mychan.Close {
 			goto end
 		}
@@ -235,7 +234,7 @@ end:
 	fmt.Println("End")
 }
 
-func main1()  {
+func main1() {
 	cancelsignal.NormalCancel3()
 	//publish.Test()
 	//locktest.Test1()

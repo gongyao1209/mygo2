@@ -4,7 +4,7 @@ import (
 	"mygo2/mianshi/test190125"
 )
 
-func main()  {
+func main() {
 	//funcTest.Test2()
 	//panicTest.Test()
 	//funcTest.MyTest()
@@ -12,4 +12,3 @@ func main()  {
 	//test1014.StringMethod()
 	test190125.Test()
 }
-

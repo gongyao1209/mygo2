@@ -11,7 +11,7 @@ import "fmt"
  */
 
 type ListNode struct {
-	Val int
+	Val  int
 	Next *ListNode
 }
 
@@ -21,14 +21,14 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	l1_deep := 0
 	for temp != nil {
 		temp = temp.Next
-		l1_deep ++
+		l1_deep++
 	}
 
 	temp = l2
 	l2_deep := 0
 	for temp != nil {
 		temp = temp.Next
-		l2_deep ++
+		l2_deep++
 	}
 
 	var len_ *ListNode
@@ -106,7 +106,7 @@ func LengthOfLongestSubstring(s string) int {
 	res := make(map[int]([]string))
 
 	for i := 0; i < len_s; i++ {
-		for j := i + 1; j <= len_s; j ++ {
+		for j := i + 1; j <= len_s; j++ {
 			res[j-i] = append(res[j-i], s[i:j])
 		}
 	}

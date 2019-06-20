@@ -8,29 +8,28 @@ func test(f filter, i int, s string) bool {
 	return f(i, s)
 }
 
-func MyTest()  {
+func MyTest() {
 	fmt.Println(
 		test(func(i int, s string) bool {
-			
+
 			return true
 		},
-		1, "aaa"))
+			1, "aaa"))
 }
-
 
 //================================================================================
 // 方法的调用
 type Int int
 
-func (i Int)Get()  {
+func (i Int) Get() {
 	fmt.Println("Get")
 }
 
-func (i *Int)Set()  {
+func (i *Int) Set() {
 	fmt.Println("Set")
 }
 
-func Test()  {
+func Test() {
 	var i Int = 10
 
 	(i).Get()
@@ -49,17 +48,17 @@ type T struct {
 	a int
 }
 
-func (t T)Get()  {
+func (t T) Get() {
 	fmt.Println("Get T, value : ", t.a)
 }
 
-func (t *T)Set(in int)  {
+func (t *T) Set(in int) {
 	t.a = in
 	fmt.Println("Set T, value : ", t.a)
 }
 
-func Test2()  {
-	t := T{a:10}
+func Test2() {
+	t := T{a: 10}
 
 	//方法表达式调用
 	f := T.Get

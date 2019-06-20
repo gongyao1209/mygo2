@@ -8,21 +8,21 @@ import (
 	"net/rpc/jsonrpc"
 )
 
-type HelloService struct {}
+type HelloService struct{}
 
-func (h *HelloService)Hello(request string, reply *string) error {
+func (h *HelloService) Hello(request string, reply *string) error {
 	*reply = "Hello " + request
 	fmt.Println(*reply)
 	return nil
 }
 
-func (h *HelloService)Hello2(request string, reply *string) error  {
+func (h *HelloService) Hello2(request string, reply *string) error {
 	*reply = "shabia " + request
 	fmt.Println(*reply)
 	return nil
 }
 
-func main()  {
+func main() {
 	rpc.RegisterName("HelloService", new(HelloService))
 
 	listener, err := net.Listen("tcp", ":12345")

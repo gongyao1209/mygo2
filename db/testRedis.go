@@ -10,15 +10,15 @@ import (
 )
 
 var (
-	pool *redis.Pool
+	pool        *redis.Pool
 	redisServer = flag.String("redisServer", RedisUrl, "")
 )
 
 const (
-	RedisUrl = "localhost:6379"
-	redisMaxIdle = 3
+	RedisUrl            = "localhost:6379"
+	redisMaxIdle        = 3
 	redisIdleTimeoutSec = 1
-	redisPassword = ""
+	redisPassword       = ""
 )
 
 //获取redis连接池
@@ -30,7 +30,7 @@ func newPool() *redis.Pool {
 		MaxActive: 0,
 		//在此期间保持空闲关闭连接
 		IdleTimeout: redisIdleTimeoutSec * time.Second,
-		Dial: func () (redis.Conn, error) {
+		Dial: func() (redis.Conn, error) {
 			c, err := redis.Dial("tcp", RedisUrl)
 			if err != nil {
 				return nil, err
@@ -114,8 +114,7 @@ func EXPIRE(key interface{}, secend int) int64 {
 //	return c
 //}
 
-
-func Test()  {
+func Test() {
 	var wg sync.WaitGroup
 
 	for i := 0; i < 4; i++ {
@@ -138,7 +137,7 @@ func Test()  {
 
 func errCheck(err error) {
 	if err != nil {
-		fmt.Println("sorry,has some error:",err)
+		fmt.Println("sorry,has some error:", err)
 		os.Exit(-1)
 	}
 }

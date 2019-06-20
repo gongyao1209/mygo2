@@ -17,15 +17,15 @@ func longtimeCostFunc(c chan<- int) {
 	fmt.Println("calculate finished")
 }
 
-func NormalCancel()  {
+func NormalCancel() {
 	ch := make(chan int)
 
 	go longtimeCostFunc(ch)
 
 	select {
-	case r := <- ch:
+	case r := <-ch:
 		fmt.Println("longtimeCostFunc return:", r)
-	case <- time.After(3 * time.Second):
+	case <-time.After(3 * time.Second):
 		fmt.Println("too long to wait for the result")
 	}
 
@@ -41,10 +41,10 @@ func longtimeCostFunc2(ctx context.Context, c chan<- int) {
 
 	for i := 0; i < 10; i++ {
 		select {
-		case <- ctx.Done():
+		case <-ctx.Done():
 			fmt.Println("calculate interrupted")
 			return
-		case <- time.After(time.Second):
+		case <-time.After(time.Second):
 			fmt.Println("calculating...")
 		}
 	}
@@ -53,8 +53,7 @@ func longtimeCostFunc2(ctx context.Context, c chan<- int) {
 	fmt.Println("calculate finished")
 }
 
-
-func NormalCancel2()  {
+func NormalCancel2() {
 	ch := make(chan int)
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -62,9 +61,9 @@ func NormalCancel2()  {
 	go longtimeCostFunc2(ctx, ch)
 
 	select {
-	case r := <- ch:
+	case r := <-ch:
 		fmt.Println("longtimeCostFunc return:", r)
-	case <- time.After(3 * time.Second):
+	case <-time.After(3 * time.Second):
 		cancel()
 		fmt.Println("too long to wait for the result")
 	}
@@ -73,7 +72,6 @@ func NormalCancel2()  {
 
 	return
 }
-
 
 // =========================普通关闭信号==========================
 
@@ -86,7 +84,7 @@ func longtimeCostFunc3(is_cancel *bool, c chan<- int) {
 			return
 		}
 		select {
-		case <- time.After(time.Second):
+		case <-time.After(time.Second):
 			fmt.Println("calculating...")
 		}
 	}
@@ -95,16 +93,16 @@ func longtimeCostFunc3(is_cancel *bool, c chan<- int) {
 	fmt.Println("calculate finished")
 }
 
-func NormalCancel3()  {
+func NormalCancel3() {
 	ch := make(chan int)
 	is_close := false
 
 	go longtimeCostFunc3(&is_close, ch)
 
 	select {
-	case r :=<- ch:
+	case r := <-ch:
 		fmt.Println("longtimeCostFunc return:", r)
-	case <- time.After(3 * time.Second):
+	case <-time.After(3 * time.Second):
 		is_close = true
 		fmt.Println("too long to wait for the result")
 	}
@@ -124,7 +122,7 @@ func longtimeCostFunc4(b chan bool, c chan<- int) {
 		case <-b:
 			fmt.Println("calculate interrupted")
 			return
-		case <- time.After(time.Second):
+		case <-time.After(time.Second):
 			fmt.Println("calculating...")
 		}
 	}
@@ -133,16 +131,16 @@ func longtimeCostFunc4(b chan bool, c chan<- int) {
 	fmt.Println("calculate finished")
 }
 
-func NormalCancel4()  {
+func NormalCancel4() {
 	ch := make(chan int)
 	b := make(chan bool)
 
 	go longtimeCostFunc4(b, ch)
 
 	select {
-	case r :=<- ch:
+	case r := <-ch:
 		fmt.Println("longtimeCostFunc return:", r)
-	case <- time.After(3 * time.Second):
+	case <-time.After(3 * time.Second):
 		b <- true
 		fmt.Println("too long to wait for the result")
 	}

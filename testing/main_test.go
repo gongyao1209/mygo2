@@ -41,27 +41,26 @@ func BenchmarkRangeForSlice(b *testing.B) {
 }
 */
 
-
 func BenchmarkStringPlus(b *testing.B) {
-	for i:=0;i<b.N;i++{
+	for i := 0; i < b.N; i++ {
 		StringPlus()
 	}
 }
 
 func BenchmarkStringPlusFtm(b *testing.B) {
-	for i:=0;i<b.N;i++{
+	for i := 0; i < b.N; i++ {
 		StringPlusFtm()
 	}
 }
 
 func BenchmarkStringPlusJoin(b *testing.B) {
-	for i:=0;i<b.N;i++{
+	for i := 0; i < b.N; i++ {
 		StringPlusJoin()
 	}
 }
 
 func BenchmarkStringPlusBuffer(b *testing.B) {
-	for i:=0;i<b.N;i++{
+	for i := 0; i < b.N; i++ {
 		StringPlusBuffer()
 	}
 }

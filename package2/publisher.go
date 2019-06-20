@@ -12,32 +12,33 @@ import (
 //发布订阅 并发模式，主要是 有一个订阅的过程
 
 type (
-	subscriber chan interface{} //订阅者 信道
-	filter func(v interface{}) bool //过滤器
+	subscriber chan interface{}         //订阅者 信道
+	filter     func(v interface{}) bool //过滤器
 )
 
 //信息发布者
 type Publisher struct {
-	m				sync.RWMutex //读写锁
-	buffer 			int //一个订阅者的缓存信息数量
-	timeout 		time.Duration //信息的延迟时间
-	subscribers 	map[subscriber]filter //订阅者
+	m           sync.RWMutex          //读写锁
+	buffer      int                   //一个订阅者的缓存信息数量
+	timeout     time.Duration         //信息的延迟时间
+	subscribers map[subscriber]filter //订阅者
 }
 
 //获取一个信息发布者
 func NewPublisher(duration time.Duration, int2 int) *Publisher {
 	return &Publisher{
-		buffer:int2,
-		timeout:duration,
-		subscribers:make(map[subscriber]filter), //映射初始化
+		buffer:      int2,
+		timeout:     duration,
+		subscribers: make(map[subscriber]filter), //映射初始化
 	}
 }
+
 // 信息发布者关闭
-func (p *Publisher) Close()  {
+func (p *Publisher) Close() {
 	p.m.Lock()
 	defer p.m.Unlock()
 
-	for sub,_ := range p.subscribers {
+	for sub, _ := range p.subscribers {
 		delete(p.subscribers, sub)
 		close(sub)
 	}
@@ -55,7 +56,7 @@ func (p *Publisher) GetSubscriber(filter2 filter) chan interface{} {
 }
 
 //删除一个信息订阅者
-func (p *Publisher) DelSubscriber(sub subscriber)  {
+func (p *Publisher) DelSubscriber(sub subscriber) {
 	p.m.Lock()
 	defer p.m.Unlock()
 
@@ -63,21 +64,21 @@ func (p *Publisher) DelSubscriber(sub subscriber)  {
 	close(sub)
 }
 
-func (p *Publisher) PublishAll(info interface{})  {
+func (p *Publisher) PublishAll(info interface{}) {
 	p.m.RLock()
 	defer p.m.RUnlock()
 
 	var wg sync.WaitGroup
 	for sub, filt := range p.subscribers {
 		wg.Add(1)
-		go p.PublishOne(sub, filt, info, &wg)//给一个人发放信息
+		go p.PublishOne(sub, filt, info, &wg) //给一个人发放信息
 	}
 
 	wg.Wait()
 	return
 }
 
-func (p *Publisher) PublishOne(sub subscriber, filt filter, info interface{}, wg *sync.WaitGroup)  {
+func (p *Publisher) PublishOne(sub subscriber, filt filter, info interface{}, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	if filt != nil && !filt(info) {
@@ -85,15 +86,15 @@ func (p *Publisher) PublishOne(sub subscriber, filt filter, info interface{}, wg
 	}
 
 	select {
-	case sub<-info:
+	case sub <- info:
 	case <-time.After(p.timeout):
 		fmt.Println("timeout")
 	}
 }
 
-func Test1011_01()  {
+func Test1011_01() {
 	//获取信息发布者
-	p := NewPublisher(100 * time.Microsecond, 1)
+	p := NewPublisher(100*time.Microsecond, 1)
 	defer p.Close()
 
 	//获取订阅者1

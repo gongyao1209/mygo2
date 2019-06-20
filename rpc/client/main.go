@@ -8,7 +8,7 @@ import (
 	"net/rpc/jsonrpc"
 )
 
-func main()  {
+func main() {
 	conn, err := net.Dial("tcp", "localhost:12345")
 	if err != nil {
 		log.Fatal("dialing:", err)

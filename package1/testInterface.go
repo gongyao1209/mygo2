@@ -10,18 +10,19 @@ import (
 
 type (
 	push_driver chan interface{}
-	filt func(v interface{}) bool
+	filt        func(v interface{}) bool
 )
+
 //
 type Pusher struct {
-	m sync.RWMutex
-	buffer int
+	m       sync.RWMutex
+	buffer  int
 	timeout time.Duration
 	drivers []push_driver
-	quit chan bool
+	quit    chan bool
 }
 
-func p(v interface{})  {
+func p(v interface{}) {
 	switch v.(type) {
 	case int:
 		fmt.Println("int ", v.(int))
@@ -48,7 +49,7 @@ func IsShanxi(filt2 filt, v interface{}) string {
 	}
 }
 
-func Test101202()  {
+func Test101202() {
 
 	//r := rand.New(rand.NewSource(time.Now().Unix()))
 	//
@@ -61,11 +62,10 @@ func Test101202()  {
 	//fmt.Println(len(sl))
 	fmt.Println(strings.Replace("gongyao", "yao", "wanghui", 3))
 
-	str := "gongwanghui";
+	str := "gongwanghui"
 
 	fmt.Println(strings.Index(str[5:], "yao"))
 	os.Exit(1)
-
 
 	a := IsShanxi(func(v interface{}) bool {
 		if v == nil {

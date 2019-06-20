@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func handleConn(conn net.Conn)  {
+func handleConn(conn net.Conn) {
 	defer func() {
 		conn.Close()
 		fmt.Println("close conn ", conn.RemoteAddr().String())
@@ -14,7 +14,7 @@ func handleConn(conn net.Conn)  {
 
 	//conn.Write([]byte("hello socket\n"))
 	// 连接循环十次 数据
-	for i:= 0; i < 10; i++ {
+	for i := 0; i < 10; i++ {
 		fmt.Printf("accept i = %d\n", i)
 
 		//设置 读取 阻塞的最迟时间
@@ -35,12 +35,12 @@ func handleConn(conn net.Conn)  {
 		}
 
 		msg += time.Now().String()
-		
+
 		conn.Write([]byte(msg)) //写数据
 	}
 }
 
-func main()  {
+func main() {
 	//一直在监听端口
 	listener, err := net.Listen("tcp", ":12344")
 	if err != nil {
@@ -63,7 +63,7 @@ func main()  {
 	//loopClient()
 }
 
-func loopClient()  {
+func loopClient() {
 	var cs []net.Conn
 
 	for i := 0; i < 5; i++ {

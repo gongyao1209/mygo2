@@ -15,7 +15,7 @@ type publisher struct {
 	Client map[string]PushMsg
 }
 
-func (p *publisher)Publish(msg string)  {
+func (p *publisher) Publish(msg string) {
 	if len(p.Client) == 0 {
 		return
 	}
@@ -24,7 +24,7 @@ func (p *publisher)Publish(msg string)  {
 	}
 }
 
-func (p *publisher)CloseAll()  {
+func (p *publisher) CloseAll() {
 	if len(p.Client) == 0 {
 		return
 	}
@@ -35,14 +35,14 @@ func (p *publisher)CloseAll()  {
 	}
 }
 
-func (p *publisher)CloseName(name string)  {
+func (p *publisher) CloseName(name string) {
 	if cli, ok := p.Client[name]; ok {
 		close(cli)
 		delete(p.Client, name)
 	}
 }
 
-func Test()  {
+func Test() {
 	//fmt.Println("1, ", runtime.NumGoroutine())
 	//ch1 := get_driver("gongyao")
 	//fmt.Println("2, ", runtime.NumGoroutine())
@@ -54,13 +54,13 @@ func Test()  {
 	fmt.Println("1, ", runtime.NumGoroutine())
 	//ch2 := make(chan interface{}, 10)
 
-	p := publisher{Client:make(map[string]PushMsg)}
+	p := publisher{Client: make(map[string]PushMsg)}
 
 	p.Client["a"] = g1.Msg
 	//p.Client["b"] = ch2
 
 	var wg sync.WaitGroup
-	for i := 1; i <= 1; i ++ {
+	for i := 1; i <= 1; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
@@ -76,7 +76,7 @@ func Test()  {
 	//	p.Publish("gongyao3")
 	//
 	//	p.CloseAll()
-		//p.CloseName("b")
+	//p.CloseName("b")
 	//}()
 	time.Sleep(1 * time.Second)
 
@@ -100,7 +100,6 @@ func Test()  {
 	//		fmt.Println("Ch2 : ", c)
 	//	}
 	//}()
-
 
 	//ok1 := true
 	//ok2 := true
@@ -130,12 +129,12 @@ func Test()  {
 }
 
 // 获取节点 这才是真正的订阅发布者模式 哈哈
-func get_driver(name string) (chan interface{}) {
+func get_driver(name string) chan interface{} {
 	ch := make(chan interface{}, 10)
 	go func() {
 		for {
 			select {
-			case c, ok :=<- ch:
+			case c, ok := <-ch:
 				if !ok {
 					goto End
 				}
@@ -145,8 +144,8 @@ func get_driver(name string) (chan interface{}) {
 			}
 		}
 
-		End:
-			fmt.Println("End")
+	End:
+		fmt.Println("End")
 	}()
 	return ch
 }

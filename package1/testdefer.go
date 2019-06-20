@@ -67,13 +67,13 @@ func Defer1019_03() (i int) {
 	i = 1
 	defer func(i *int) {
 		fmt.Printf("defer %p\n", i)
-		*i ++
+		*i++
 	}(&i)
 
 	fmt.Printf("i的地址: %p\n", &i)
 	return
 }
 
-func Defer1019_05()  {
+func Defer1019_05() {
 
 }

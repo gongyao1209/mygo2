@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func StringMethod()  {
+func StringMethod() {
 	s1 := "gongyao,dadad,adadq,3123 131"
 	s2 := "yaoke"
 
@@ -16,7 +16,6 @@ func StringMethod()  {
 	d2 := strings.IndexByte(s1, s2[0])
 
 	fmt.Println(d2, s2[0])
-
 
 	d3 := strings.ContainsAny(s1, "g")
 	fmt.Println(d3)

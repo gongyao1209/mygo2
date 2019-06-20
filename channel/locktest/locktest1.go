@@ -9,7 +9,7 @@ import (
 var m sync.Mutex
 var wg sync.WaitGroup
 
-func Test1()  {
+func Test1() {
 	m.Lock()
 
 	wg.Add(2)
@@ -23,7 +23,6 @@ func Test1()  {
 		time.Sleep(1 * time.Second)
 		fmt.Println("111")
 	}()
-
 
 	go func() {
 		defer func() {

@@ -4,14 +4,13 @@ import (
 	"fmt"
 )
 
-func main()  {
+func main() {
 	//s := "tyjdnmdskovpicdvrrxvlvinkegzybmtcywrmbjwpglakqvchvzvshicnqdluqgwqdnceyywglwqetunotigasjqjoddgkzwpoyv";
 
 	//s = "au"
 
 	//fmt.Println(s[1:2])
-	strs := []string{"flower","flow","flight1"}
-
+	strs := []string{"flower", "flow", "flight1"}
 
 	fmt.Println(strs)
 	//list.TestMergeTwoLists()

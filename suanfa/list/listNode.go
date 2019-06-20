@@ -3,7 +3,7 @@ package list
 import "fmt"
 
 type ListNode struct {
-	Val int
+	Val  int
 	Next *ListNode
 }
 
@@ -71,7 +71,7 @@ func getList(n int) *ListNode {
 	var pre *ListNode
 
 	for i := 0; i < n; i++ {
-		temp := ListNode{Val:i, Next:nil}
+		temp := ListNode{Val: i, Next: nil}
 		if i == 0 {
 			l = &temp
 			pre = &temp
@@ -84,7 +84,7 @@ func getList(n int) *ListNode {
 	return l
 }
 
-func TestMergeTwoLists()  {
+func TestMergeTwoLists() {
 	l1 := getList(4)
 	l2 := getList(5)
 	print_l(l1)
@@ -98,7 +98,7 @@ func TestMergeTwoLists()  {
 	print_l(l3)
 }
 
-func print_l(l *ListNode)  {
+func print_l(l *ListNode) {
 	cur := l
 	//如果处理的节点还有的话
 	for cur != nil {

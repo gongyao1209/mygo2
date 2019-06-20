@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-func SayHello(w http.ResponseWriter, r *http.Request)  {
+func SayHello(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm() //解析参数
 
 	fmt.Println(time.Now().String())
@@ -30,7 +30,7 @@ func SayHello(w http.ResponseWriter, r *http.Request)  {
 	fmt.Fprintf(w, "Hello World") //这个写入到w的是输出到客户端的
 }
 
-func Login(w http.ResponseWriter, r *http.Request)  {
+func Login(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm() //需要解析参数
 	fmt.Println("Method: ", r.Method)
 
@@ -40,7 +40,6 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 	} else {
 		cookie, _ := r.Cookie("username")
 		fmt.Fprintln(w, cookie)
-
 
 		// 校验必传
 		if len(r.Form["username"]) == 0 || len(r.Form["username"][0]) == 0 {
@@ -67,7 +66,7 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 		}
 
 		fmt.Println("username get: ", r.Form.Get("username")) //仅仅获取一个
-		fmt.Println("username: ", r.Form["username"]) //和上面的区别就是，下面这个获取slice 是个数组
+		fmt.Println("username: ", r.Form["username"])         //和上面的区别就是，下面这个获取slice 是个数组
 		fmt.Println("password: ", r.Form["password"])
 		fmt.Println("age: ", age)
 
@@ -76,7 +75,7 @@ func Login(w http.ResponseWriter, r *http.Request)  {
 	}
 }
 
-func Test(w http.ResponseWriter, r *http.Request)  {
+func Test(w http.ResponseWriter, r *http.Request) {
 
 	// 设置 cookie
 	expiration := time.Now()

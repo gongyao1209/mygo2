@@ -2,7 +2,7 @@ package panicTest
 
 import "fmt"
 
-func Test()  {
+func Test() {
 	defer func() {
 		err := recover()
 		if err != nil {

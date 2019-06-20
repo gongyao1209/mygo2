@@ -2,13 +2,13 @@ package stringcode
 
 import "fmt"
 
-func Test()  {
+func Test() {
 	fmt.Println("hello world")
 }
 
 /**
-	最长子串
- */
+最长子串
+*/
 func MaxZichuan(s string) int {
 
 	len_s := len(s)
@@ -62,7 +62,7 @@ func del_head(m map[string]int, strs []string, s string) (map[string]int, []stri
 	for k, v := range strs {
 		delete(m, v)
 		if v == s {
-			return m, strs[k + 1:]
+			return m, strs[k+1:]
 		}
 	}
 
@@ -91,7 +91,7 @@ func qianzhui(strs []string) string {
 
 	r := make([]byte, 0)
 
-	Xunhuan:
+Xunhuan:
 	for i := 0; i < len_s; i++ { //最长字符
 		var t byte
 		for _, str := range strs {
@@ -122,4 +122,3 @@ func CheckInclusion(s1 string, s2 string) bool {
 
 	return true
 }
-

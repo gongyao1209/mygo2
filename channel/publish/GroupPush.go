@@ -5,7 +5,7 @@ import "fmt"
 type PushMsg chan interface{}
 
 type UserGroup struct {
-	Msg PushMsg
+	Msg  PushMsg
 	User map[string]string
 }
 
@@ -15,7 +15,7 @@ func NewGroup() *UserGroup {
 	g := UserGroup{
 		Msg: m,
 		User: map[string]string{
-			"gongyao":"gongyao",
+			"gongyao": "gongyao",
 		},
 	}
 
@@ -30,6 +30,6 @@ func NewGroup() *UserGroup {
 	return &g
 }
 
-func (g *UserGroup)Close() {
+func (g *UserGroup) Close() {
 	close(g.Msg)
 }
