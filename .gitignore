@@ -14,3 +14,5 @@
 
 # Log
 *.log
+
+*vendor/*
