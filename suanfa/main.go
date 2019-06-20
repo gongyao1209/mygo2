@@ -10,7 +10,7 @@ func main()  {
 	//s = "au"
 
 	//fmt.Println(s[1:2])
-	strs := []string{"flower","flow","flight"}
+	strs := []string{"flower","flow","flight1"}
 
 
 	fmt.Println(strs)
