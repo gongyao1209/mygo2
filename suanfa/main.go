@@ -1,7 +1,7 @@
 package main
 
 import (
-	"mygo2/suanfa/string"
+	"fmt"
 )
 
 func main()  {
@@ -12,9 +12,8 @@ func main()  {
 	//fmt.Println(s[1:2])
 	strs := []string{"flower","flow","flight"}
 
-	stringcode.MaxQianzhui(strs)
 
-	//fmt.Println(max)
+	fmt.Println(strs)
 	//list.TestMergeTwoLists()
 	return
 }
