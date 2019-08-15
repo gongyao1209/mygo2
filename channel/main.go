@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"mygo2/channel/cancelsignal"
+	"mygo2/channel/publish"
 	"sync"
 	"time"
 )
@@ -10,8 +11,10 @@ import (
 //主要是阻塞
 func main() {
 
+	publish.Test()
+	return
 	//如果说 信道channel 是个盒子，往里面放东西的人 是 生产者，从里面拿东西的人作为消费者
-	//go TestChannel2() //
+	go TestChannel2() //
 	//TestChannel1()
 	//TestChannel2() //只有当这个的时候会报错，和main方法一个goroutine，所以是阻塞主进程了，所以才报错
 
@@ -28,9 +31,9 @@ func main() {
 
 	// 改进方法 2
 	// 开辟新的 goroutine 使用 for range 从信道里面读取数据，阻塞也是阻塞读取信道的go程 对于main程并不会阻塞。但是这样是不安全的
-	//TestChannel2_1()
+	TestChannel2_1()
 	//return
-	TestChannel2_1Error() //TODO 为什么这个也会阻塞，sync.WaitGroup
+	//TestChannel2_1Error() //TODO 为什么这个也会阻塞，sync.WaitGroup
 	return
 	// 改进方法3
 	// 使用 for 来读取信道里面的数据

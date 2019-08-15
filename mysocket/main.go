@@ -84,3 +84,6 @@ func client(i int) net.Conn {
 	//defer conn.Close()
 	return conn
 }
+
+func w()  {
+}

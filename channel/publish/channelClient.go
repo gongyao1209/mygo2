@@ -60,7 +60,7 @@ func Test() {
 	//p.Client["b"] = ch2
 
 	var wg sync.WaitGroup
-	for i := 1; i <= 1; i++ {
+	for i := 1; i <= 2; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
