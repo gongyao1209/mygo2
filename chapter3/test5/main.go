@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func main()  {
+func main()  { // 一个发送者，多个接受者，关闭信道
 	rand.Seed(time.Now().UnixNano())
 	log.SetFlags(0)
 
