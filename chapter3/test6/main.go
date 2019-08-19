@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func main()  { // 多个发送者，一个接受者 如何 关闭信道
+func main()  { // 多个发送者，一个接受者。接受者关闭信道
 	rand.Seed(time.Now().UnixNano())
 	log.SetFlags(0)
 

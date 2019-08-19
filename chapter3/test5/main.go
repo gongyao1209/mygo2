@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func main()  { // 一个发送者，多个接受者，关闭信道
+func main()  { // 一个发送者，多个接受者，发送者关闭信道
 	rand.Seed(time.Now().UnixNano())
 	log.SetFlags(0)
 
@@ -37,7 +37,7 @@ func main()  { // 一个发送者，多个接受者，关闭信道
 			defer wg.Done()
 
 			for va := range ch {
-				log.Println(va)
+				log.Println(i, "|", va)
 			}
 		}()
 	}
