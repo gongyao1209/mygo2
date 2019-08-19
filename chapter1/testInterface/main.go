@@ -1,26 +1,39 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"unsafe"
+)
 
 func main()  {
 
-	//var i Lang
-	//p := PHP{}
+	var i Lang
+	p := PHP{}
 	////g := Go{}
 	//
-	//i = p
-	//Say(i)
+	i = p
+	Say(i)
+
+	return
 	//
 	////Say(&g)
 
-	var p People
-	p = Gong{13}
+	//testInterType()
+	//testInterType2()
+	//return
 
-	age := p.sayAge()
-	p.upAge()
-	age = p.sayAge()
-
-	fmt.Println(age)
+	//var p People
+	//
+	//fmt.Printf("p2: %T, %v\n", p, p) // 动态类型，动态值。
+	//
+	//p = &Gong{13}
+	//fmt.Printf("p2: %T, %v\n", p, p)
+	//
+	//age := p.sayAge()
+	//p.upAge()
+	//age = p.sayAge()
+	//
+	//fmt.Println(age)
 }
 
 type Lang interface {
@@ -65,4 +78,34 @@ func (g Gong)sayAge() int {
 
 func (g Gong)upAge() {
 	g.age++
+}
+
+func testInterType()  {
+	var p People
+	var g *Gong
+	
+	fmt.Println(p == nil) // p 的动态类型 和 动态值 都为 nil
+	fmt.Printf("p: %T, %v\n", p, p)
+	
+	fmt.Println(g == nil) // g 的动态值为 nil
+	fmt.Printf("g: %T, %v\n", g, g)
+	
+	p = g // p 的动态类型变为 *main.Gong 动态值为nil
+	fmt.Println(p == nil) // 此时 p 和 nil 的比较为false
+	fmt.Printf("p2: %T, %v\n", p, p)
+
+	var _ People = (*Gong)(nil)
+}
+
+type ifacee struct {
+	itab, data uintptr
+}
+
+func testInterType2()  {
+	var a interface{} = (*int)(nil)
+
+	ia := *(*ifacee)(unsafe.Pointer(&a))
+
+	fmt.Println(ia)
+
 }
