@@ -32,6 +32,7 @@ func main()  { // 多个使用者，多个接受者。可能都关闭信道
 				default:
 					value := rand.Intn(MaxRandomNumber)
 					if value == 0 {
+						fmt.Println("close1")
 						close(stopCh)
 						return
 					}
@@ -55,6 +56,13 @@ func main()  { // 多个使用者，多个接受者。可能都关闭信道
 					return
 				case d :=<- dataCh:
 					fmt.Println(d)
+				default:
+					value := rand.Intn(MaxRandomNumber)
+					if value == 0 {
+						fmt.Println("close2")
+						close(stopCh)
+						return
+					}
 				}
 			}
 		}()
