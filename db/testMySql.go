@@ -11,17 +11,18 @@ var err error
 
 func init() {
 	// Dsn: "user:password@tcp(127.0.0.1:3306)/test"
-	dsn := "gongyao:Passw0rd@tcp(127.0.0.1:3306)/learning"
+	dsn := "root:S12p_w99Q@tcp(139.198.5.192:3306)/test"
 	db, err = sql.Open("mysql", dsn)
 	if err != nil {
 		fmt.Println(err)
 	}
-	db.SetMaxOpenConns(1)
+	db.SetMaxOpenConns(2)
 
 	db.Ping()
 }
 
 func GetDB() *sql.DB {
+	fmt.Println("aaa")
 	return db
 }
 
@@ -31,21 +32,24 @@ type Temp struct {
 	Class   string `json:"class"`
 }
 
-func GetData() Temp {
-	var t Temp
+type Student struct {
+	sno int
+	sname string
+	ssex string
+	sage int
+	sdept string
+}
 
-	var id int
-	var student, class string
-
-	s := `SELECT * FROM courses WHERE id = 10`
+func GetData(i int) Student {
 	dbBase := GetDB()
-	dbBase.QueryRow(s).Scan(&id, &student, &class)
 
-	t.Id = id
-	t.Student = student
-	t.Class = class
+	var t Student
 
-	fmt.Println(t)
+	s := `SELECT * FROM student WHERE Sno = ?`
+	err = dbBase.QueryRow(s, i).Scan(&t.sno, &t.sname, &t.ssex, &t.sage, &t.sdept)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	return t
 }
