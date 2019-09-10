@@ -2,16 +2,23 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
 func main()  {
 
-	test()
+	//test()
 	//fmt.Println(runtime.GOROOT())
 	//fmt.Println(runtime.GOMAXPROCS(1))
 	//
-	//fmt.Println("Hello World")
+	args := os.Args
+	args = args[1:]
+	for k, v := range args {
+		fmt.Println("key = ", k, ", value = ", v)
+	}
+	println(args)
+	fmt.Println("Hello World")
 }
 
 func test()  {

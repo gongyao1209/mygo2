@@ -21,8 +21,7 @@ func main()  {
 	fmt.Println(strings.Split(str, "n"))
 }
 
-func GetArr() string {
-	str := `15900249297
+var str1 string = `15900249297
 13512228620
 18102123987
 13652055528
@@ -81,7 +80,9 @@ func GetArr() string {
 18222307711
 18920753117`
 
-	mobiles := strings.Split(str, "\n")
+func GetArr() string {
+
+	mobiles := strings.Split(str1, "\n")
 
 	newM := make([]string, 0, 10)
 	for _, m := range mobiles {
