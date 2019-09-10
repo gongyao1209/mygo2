@@ -16,13 +16,13 @@ func init() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	db.SetMaxOpenConns(2)
+
+	db.SetMaxOpenConns(10)
 
 	db.Ping()
 }
 
 func GetDB() *sql.DB {
-	fmt.Println("aaa")
 	return db
 }
 
@@ -50,6 +50,8 @@ func GetData(i int) Student {
 	if err != nil {
 		fmt.Println(err)
 	}
+
+	fmt.Println(dbBase.Stats())
 
 	return t
 }
