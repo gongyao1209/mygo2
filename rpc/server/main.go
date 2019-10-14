@@ -1,54 +1,59 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"net/rpc"
-	"net/rpc/jsonrpc"
+	"os"
 )
 
-type HelloService struct{}
+// 算数运算结构体
+type Arith struct {
+}
 
-func (h *HelloService) Hello(request string, reply *string) error {
-	*reply = "Hello " + request
-	fmt.Println(*reply)
+// 算数运算请求结构体
+type ArithRequest struct {
+	A int
+	B int
+}
+
+// 算数运算响应结构体
+type ArithResponse struct {
+	Pro int // 乘积
+	Quo int // 商
+	Rem int // 余数
+}
+
+// 乘法运算方法
+func (this *Arith) Multiply(req ArithRequest, res *ArithResponse) error {
+	res.Pro = req.A * req.B
 	return nil
 }
 
-func (h *HelloService) Hello2(request string, reply *string) error {
-	*reply = "shabia " + request
-	fmt.Println(*reply)
+// 除法运算方法
+func (this *Arith) Divide(req ArithRequest, res *ArithResponse) error {
+	if req.B == 0 {
+		return errors.New("divide by zero")
+	}
+	res.Quo = req.A / req.B
+	res.Rem = req.A % req.B
 	return nil
 }
 
 func main() {
-	rpc.RegisterName("HelloService", new(HelloService))
+	rpc.Register(new(Arith)) // 注册rpc服务
+	rpc.HandleHTTP()         // 采用http协议作为rpc载体
 
-	listener, err := net.Listen("tcp", ":12345")
+	lis, err := net.Listen("tcp", "127.0.0.1:8095")
 	if err != nil {
-		log.Fatal("ListenTCP error:", err)
+		log.Fatalln("fatal error: ", err)
 	}
+	
 
-	//一直在监听端口 每次连接一次循环
-	for {
-		conn, err := listener.Accept()
-		if err != nil {
-			fmt.Println("Conn Err ", err)
-		}
-		fmt.Println("conn Success", conn.RemoteAddr().String())
+	fmt.Fprintf(os.Stdout, "%s", "start connection")
 
-		// 里面是连接需要做什么
-		go rpc.ServeCodec(jsonrpc.NewServerCodec(conn))
-		//handleConn(conn)
-	}
-
-	//conn, err := listener.Accept()
-	//if err != nil {
-	//	log.Fatal("Accept error:", err)
-	//}
-	//
-	//for true {
-	//	go rpc.ServeConn(conn)
-	//}
+	http.Serve(lis, nil)
 }
