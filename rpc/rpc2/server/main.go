@@ -6,7 +6,7 @@ import (
 	"net"
 )
 
-func main()  {
+func main()  { // 服务端需要一直监听，客户端只需要一次
 	lis, _ := net.Listen("tcp", ":1239")
 
 	i := 1
