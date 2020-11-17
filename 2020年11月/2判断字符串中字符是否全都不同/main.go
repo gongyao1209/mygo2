@@ -6,8 +6,8 @@ import (
 )
 
 func main()  {
-
-	fmt.Print(fun("abcd"))
+	s := "abdaddads"
+	fmt.Print(fun(s))
 }
 
 /*
