@@ -6,7 +6,7 @@ import "log"
 
 func GetName() {
 	// 建立连接
-	conn, err := amqp.Dial("amqp://guest:guest@59.110.225.116:5672/")
+	conn, err := amqp.Dial("amqp://gongyao:gongdandan1209@59.110.225.116:5672/")
 	failOnError(err, "Failed to connect to RabbitMQ")
 	defer conn.Close()
 
