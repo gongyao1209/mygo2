@@ -58,7 +58,7 @@ func insert_db_box(item jinchangBox)  {
 	db := GetDB()
 
 	// 插入数据
-	sql := `INSERT INTO box_202102 (
+	sql := `INSERT INTO m202103_box (
                         JingChangDate, CarNumber, JingChangZhuangtai, TidanCode, XiangHao, ChuanMing, HangCi, XiangXin, ChiCun, KongZhong, QianFeng,
                         JingChangYuanyin, JieFei, CheDui, CheDuiDianHua, JingChangCaoZuo, BeiZhu, LuoXiangTiao, LaiYuan, SiJi, ChuanGongsi,
                         JingChangXiangKuang, JingChangHao, ChangWei, JingChangYanXiangRen, WeixianPingJiBie, UN, HuoMing, XieYiJiage, JinChuChangStatus, ChaoGao,

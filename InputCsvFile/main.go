@@ -6,7 +6,7 @@ import (
 )
 
 func main()  {
-	//fmt.Println(Services.ReadFile())
+	fmt.Println(Services.ReadFile())
 	//fmt.Println(Services.ReadFile2())
-	fmt.Println(Services.ReadFile3())
+	//fmt.Println(Services.ReadFile3())
 }

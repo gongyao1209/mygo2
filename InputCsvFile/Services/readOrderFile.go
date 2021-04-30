@@ -120,7 +120,7 @@ func get_dir() string {
 
 	cDir, _ := os.Getwd()
 
-	return cDir + "/File/OrderFile/"
+	return cDir + "/File/202003/order/"
 }
 
 func read() string {
