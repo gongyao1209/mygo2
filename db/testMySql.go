@@ -11,7 +11,8 @@ var err error
 
 func init() {
 	// Dsn: "user:password@tcp(127.0.0.1:3306)/test"
-	dsn := "root:S12p_w99Q@tcp(139.198.5.192:3306)/test"
+	//dsn := "root:S12p_w99Q@tcp(139.198.5.192:3306)/test"
+	dsn := "root:S12p_w99Q@tcp(139.198.5.192:3306)/investorsdata"
 	db, err = sql.Open("mysql", dsn)
 	if err != nil {
 		fmt.Println(err)
