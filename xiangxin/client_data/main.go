@@ -6,7 +6,6 @@ import (
 )
 
 func main()  {
-
 	str := data.GetData()
 	fmt.Println(str)
 }

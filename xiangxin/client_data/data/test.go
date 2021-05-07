@@ -1,12 +1,11 @@
 package data
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"mygo2/db"
-	"os"
+	"mygo2/xiangxin/helper"
 )
 
 var my_maps map[string]int
@@ -19,54 +18,11 @@ func GetData() string {
 
 	clients := find_clients_by_month("2021-01-01", "2021-02-01")
 
-	fmt.Println("客户名称", " ", "二月份有没有下单")
-	for _, client := range clients {
-		fmt.Println(client.enter_name, " ", client.is_next_month)
-	}
-
-	//创建一个新文件，写入内容 5 句 “http://c.biancheng.net/golang/”
-	filePath := "/Users/gongyao/workspace/goproject/src/mygo2/202101月新增下单客户.csv"
-	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE, 0666)
+	_, err := helper.WriteToFile("客户名称", clients)
 	if err != nil {
-		fmt.Println("文件打开失败", err)
+		return err.Error()
 	}
-	//及时关闭file句柄
-	defer func(file *os.File) {
-		err := file.Close()
-		if err != nil {
-			panic("error")
-		}
-	}(file)
-	//写入文件时，使用带缓存的 *Writer
-	write := bufio.NewWriter(file)
-
-	fmt.Println("客户名称", " ", "二月份有没有下单")
-
-	i, err := write.WriteString(fmt.Sprint("来源", "\t", "客户名称", "\t", "二月份有没有下单"))
-	if err != nil {
-		return ""
-	}
-	fmt.Println(i)
-
-	write.WriteString("\n")
-	for _, client := range clients {
-		var en_type_name string
-		if client.enter_type == 1 {
-			en_type_name = "箱信中台客户"
-		} else {
-			en_type_name = "Erp"
-		}
-		write.WriteString(fmt.Sprint(en_type_name, "\t", client.enter_name, "\t", client.is_next_month))
-		write.WriteString("\n")
-	}
-
-	//for i := 0; i < 5; i++ {
-	//	write.WriteString("http://c.biancheng.net/golang/ \n")
-	//}
-	//Flush将缓存的文件真正写入到文件中
-	write.Flush()
-
-	return ""
+	return "处理成功"
 }
 
 func get_enter_name(id int, id_type int) string {
@@ -93,15 +49,9 @@ func get_enter_name(id int, id_type int) string {
 	return name
 }
 
-type Enter struct {
-	id            int
-	enter_key     string
-	enter_type    int
-	enter_name    string
-	is_next_month int
-}
 
-func find_clients_by_month(begin, end string) []Enter {
+
+func find_clients_by_month(begin, end string) []helper.Enter {
 
 	mydb := db.GetDB()
 
@@ -120,20 +70,20 @@ func find_clients_by_month(begin, end string) []Enter {
 	bind = append(bind, begin)
 	bind = append(bind, end)
 
-	enters := make([]Enter, 0)
+	enters := make([]helper.Enter, 0)
 
 	rows, err := mydb.Query(sql, bind...)
 	if err != nil {
 		panic(err)
 	}
 	for rows.Next() {
-		enter := Enter{}
-		_ = rows.Scan(&enter.enter_key, &enter.id, &enter.enter_type)
+		enter := helper.Enter{}
+		_ = rows.Scan(&enter.Enter_key, &enter.Id, &enter.Enter_type)
 
-		enter.enter_name = get_enter_name(enter.id, enter.enter_type)
+		enter.Enter_name = get_enter_name(enter.Id, enter.Enter_type)
 
-		if _, exists := my_maps[enter.enter_key]; exists {
-			enter.is_next_month = 1
+		if _, exists := my_maps[enter.Enter_key]; exists {
+			enter.Is_next_month = 1
 		}
 
 		enters = append(enters, enter)
