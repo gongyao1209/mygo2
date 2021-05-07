@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"mygo2/db"
 	"os"
 )
-import _ "github.com/go-sql-driver/mysql"
 
 var my_maps map[string]int
 
@@ -17,16 +17,12 @@ func GetData() string {
 
 	my_maps = init_month_client()
 
-	clients := find_clients_by_month(
-		"2021-01-01",
-		"2021-02-01",
-		)
+	clients := find_clients_by_month("2021-01-01", "2021-02-01")
 
 	fmt.Println("客户名称", " ", "二月份有没有下单")
 	for _, client := range clients {
 		fmt.Println(client.enter_name, " ", client.is_next_month)
 	}
-
 
 	//创建一个新文件，写入内容 5 句 “http://c.biancheng.net/golang/”
 	filePath := "/Users/gongyao/workspace/goproject/src/mygo2/202101月新增下单客户.csv"
@@ -35,13 +31,23 @@ func GetData() string {
 		fmt.Println("文件打开失败", err)
 	}
 	//及时关闭file句柄
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			panic("error")
+		}
+	}(file)
 	//写入文件时，使用带缓存的 *Writer
 	write := bufio.NewWriter(file)
 
 	fmt.Println("客户名称", " ", "二月份有没有下单")
 
-	write.WriteString(fmt.Sprint("来源", "\t", "客户名称", "\t", "二月份有没有下单"))
+	i, err := write.WriteString(fmt.Sprint("来源", "\t", "客户名称", "\t", "二月份有没有下单"))
+	if err != nil {
+		return ""
+	}
+	fmt.Println(i)
+
 	write.WriteString("\n")
 	for _, client := range clients {
 		var en_type_name string
@@ -62,7 +68,6 @@ func GetData() string {
 
 	return ""
 }
-
 
 func get_enter_name(id int, id_type int) string {
 
@@ -89,10 +94,10 @@ func get_enter_name(id int, id_type int) string {
 }
 
 type Enter struct {
-	id int
-	enter_key string
-	enter_type int
-	enter_name string
+	id            int
+	enter_key     string
+	enter_type    int
+	enter_name    string
 	is_next_month int
 }
 
