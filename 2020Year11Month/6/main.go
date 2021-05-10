@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"gocode/mygo2/2020年11月/6机器人坐标问题/cmd"
+	"gocode/mygo2/2020Year11Month/6/cmd"
 )
 
 func main()  {

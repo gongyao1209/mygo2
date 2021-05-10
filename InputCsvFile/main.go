@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"mygo2/InputCsvFile/Services"
+	"gocode/mygo2/InputCsvFile/Services"
 )
 
 func main()  {
