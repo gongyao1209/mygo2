@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"mygo2/channel/cancelsignal"
-	"mygo2/channel/publish"
+	"gocode/mygo2/channel/cancelsignal"
+	"gocode/mygo2/channel/publish"
 	"sync"
 	"time"
 )
