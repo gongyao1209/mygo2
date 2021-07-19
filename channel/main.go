@@ -3,15 +3,14 @@ package main
 import (
 	"fmt"
 	"gocode/mygo2/channel/cancelsignal"
-	"gocode/mygo2/channel/publish"
 	"sync"
 	"time"
 )
 
 //主要是阻塞
 func main() {
-
-	publish.Test()
+	str := "2021-10-30"
+	fmt.Println(preMonthLastDay(str))
 	return
 	//如果说 信道channel 是个盒子，往里面放东西的人 是 生产者，从里面拿东西的人作为消费者
 	go TestChannel2() //
@@ -57,6 +56,15 @@ func TestChannel1() {
 	}
 
 	time.Sleep(1 * time.Second)
+}
+
+func preMonthLastDay(str string) string {
+	ti, err := time.Parse("2006-01-02", str)
+	if err != nil {
+		return ""
+	}
+	ti2 := ti.AddDate(0, 0, -1 * ti.Day())
+	return ti2.Format("2006-01-02")
 }
 
 func TestChannel2() {

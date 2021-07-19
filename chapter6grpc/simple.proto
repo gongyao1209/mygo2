@@ -1,5 +1,5 @@
 syntax = "proto3";
-package chapter6grpc;
+package pb;
 
 message SimpleRequest{
     // 定义发送的参数，采用驼峰命名方式，小写加下划线，如：student_name
@@ -16,4 +16,13 @@ message SimpleResponse{
 // 定义我们的服务（可定义多个服务,每个服务可定义多个接口）
 service Simple{
     rpc Route (SimpleRequest) returns (SimpleResponse){};
+    rpc GetSum (SumRequest) returns (SumResponse){};
+}
+
+message SumRequest{
+    int32 number1 = 1;
+    int32 number2 = 2;
+}
+message SumResponse{
+    int32 sum = 1;
 }

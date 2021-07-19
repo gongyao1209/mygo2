@@ -7,7 +7,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	pb "gocode/mygo2/chapter6grpc"
+	pb "gocode/mygo2/chapter6grpc/pb"
 )
 // SimpleService 定义我们的服务
 type SimpleService struct{}
@@ -20,6 +20,13 @@ func (s *SimpleService) Route(ctx context.Context, req *pb.SimpleRequest) (*pb.S
 		Code:  a,
 		Value: str,
 	}
+	return &res, nil
+}
+
+func (s *SimpleService) GetSum(ctx context.Context, req *pb.SumRequest) (*pb.SumResponse, error)  {
+	log.Println(req)
+	sum := req.Number1 + req.Number2
+	res := pb.SumResponse{Sum: sum}
 	return &res, nil
 }
 
@@ -40,6 +47,7 @@ func main() {
 	log.Println(Address + " net.Listing...")
 	// 新建gRPC服务器实例
 	grpcServer := grpc.NewServer()
+
 	// 在gRPC服务器注册我们的服务
 	pb.RegisterSimpleServer(grpcServer, &SimpleService{})
 
